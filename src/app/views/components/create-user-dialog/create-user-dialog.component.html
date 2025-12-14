@@ -1,0 +1,100 @@
+<div
+  class="fixed top-0 right-0 h-screen rounded-l-lg w-2/3 md:w-1/3 bg-white shadow-lg transform transition-transform translate-x-0"
+>
+  <div class="flex justify-between items-center p-4 border-b">
+    <h2 class="text-lg font-bold">
+      {{ isEditing ? "Modifier utilisateur" : "Nouvel utilisateur" }}
+    </h2>
+    <button (click)="closeDialog()" class="text-gray-500 hover:text-gray-700">
+      <div class="px-4 py-2 rounded border-1">✖</div>
+    </button>
+  </div>
+  <form [formGroup]="createUserForm" (ngSubmit)="onSubmitUser()">
+    <div class="flex flex-col p-6 gap-2 w-full">
+      <div>
+        <p class="text-sm">Prénom</p>
+        <input
+          type="text"
+          formControlName="first_name"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 w-full"
+          placeholder="Halimatou"
+        />
+      </div>
+
+      <div>
+        <p class="text-sm">Nom</p>
+        <input
+          type="text"
+          formControlName="last_name"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 w-full"
+          placeholder="Laye"
+        />
+      </div>
+
+      <div>
+        <p class="text-sm">Email</p>
+        <input
+          type="email"
+          formControlName="email"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 w-full"
+          placeholder="manganetapha945@gmail.com"
+        />
+      </div>
+
+      <div>
+        <p class="text-sm">Numéro de téléphone</p>
+        <input
+          type="text"
+          formControlName="phone"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 w-full"
+          placeholder="771000009"
+        />
+      </div>
+
+      <div>
+        <p class="text-sm">Rôle</p>
+        <select
+          formControlName="roles"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 w-full cursor-pointer"
+        >
+          <option value="" disabled selected>Choisir un rôle</option>
+          <!-- <option value="platform_owner">Platform Owner</option>
+          <option value="platform_super_admin">Platform Super Admin</option>
+          <option value="platform_admin">Platform Admin</option> -->
+          <!-- <option value="company_super_admin"> Super Admin</option> -->
+          <option value="company_admin">Admin</option>
+          <option value="company_receptionist">Receptioniste</option>
+          <option value="company_consultant">Consultant</option>
+          <!-- <option value="company_client">Client</option>
+          <option value="company_owner">Proprietaire</option> -->
+        </select>
+      </div>
+
+      <div>
+        <p class="text-sm">Poste</p>
+        <input
+          type="text"
+          formControlName="poste"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 w-full"
+          placeholder="DG"
+        />
+      </div>
+
+      <!-- <div>
+        <p class="text-sm">Nombre maximum de rendez-vous par jour</p>
+        <input type="number" formControlName="max_appointments_per_day"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500  w-full"
+          placeholder="2">
+      </div> -->
+    </div>
+
+    <div class="mt-2 items-center mx-10">
+      <button
+        class="bg-primary-500 text-white rounded cursor-pointer w-full px-6 py-2 cursor-pointer"
+        type="submit"
+      >
+        Enregistrer le consultant
+      </button>
+    </div>
+  </form>
+</div>

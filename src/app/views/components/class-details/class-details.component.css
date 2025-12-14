@@ -1,0 +1,58 @@
+/* Styles pour l'emploi du temps */
+.timetable-grid {
+  display: grid;
+  grid-template-columns: 120px repeat(6, 1fr);
+  gap: 8px;
+}
+
+.timetable-cell {
+  min-height: 100px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+  position: relative;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.timetable-cell:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.schedule-item {
+  position: absolute;
+  inset: 4px;
+  border-radius: 6px;
+  padding: 12px;
+  color: white;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.schedule-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.schedule-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Animation pour les cartes d'élèves */
+.student-card {
+  transition: all 0.3s ease;
+}
+
+.student-card:hover {
+  transform: translateY(-4px);
+}
+

@@ -1,0 +1,208 @@
+<div class="flex flex-col gap-4">
+  <div
+    class="w-full bg-card text-primary-text shadow-lg min-h-30 p-4 rounded-lg"
+  >
+    <form [formGroup]="courseSettingForm" class="flex flex-col gap-4">
+      <div class="flex flex-row justify-between items-center">
+        <p class="font-bold">Paramètres des Cours</p>
+        <button
+          type="submit"
+          *ngIf="isUpdatingCourseSettingForm"
+          class="rounded-lg border-1 border-primary-500 text-primary-500 px-4 py-2 shadow-lg cursor-pointer hover:bg-primary-500 hover:text-white"
+          (click)="submitCourseSetting()"
+        >
+          Enregistrer
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <p class="text-sm text-[#707070]">Durée des cours</p>
+          <input
+            type="time"
+            formControlName="duration"
+            class="px-3 py-2 text-black text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 border border-gray-200 rounded-lg bg-gray-50"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <p class="text-sm text-[#707070]">Statut par défaut des cours</p>
+          <select
+            formControlName="default_status_courses"
+            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 bg-gray-50 text-black"
+          >
+            <option value="scheduled">Planifié</option>
+            <option selected value="scheduled">Planifié</option>
+          </select>
+        </div>
+        <!-- <div class="flex flex-col gap-2">
+          <p class="text-sm text-[#707070]">Création automatique de compte</p>
+          <select
+            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500"
+          >
+            <option value="true">OUI</option>
+            <option value="false">NON</option>
+          </select>
+        </div> -->
+
+        <div class="flex flex-col gap-2">
+          <p class="text-sm text-[#707070]">Email de notification</p>
+          <input
+            type="email"
+            formControlName="send_notification_emails"
+            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 bg-gray-50 text-black"
+            placeholder="contact@ecole.sn"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <p class="text-sm text-[#707070]">Pause entre les cours</p>
+          <input
+            type="time"
+            formControlName="margin_time"
+            class="px-3 py-2 text-black text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 border border-gray-200 rounded-lg bg-gray-50"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div
+    class="w-full flex flex-col bg-card text-primary-text shadow-lg min-h-30 p-4 rounded-lg gap-8 overflow-x-auto"
+  >
+    <div class="flex flex-row justify-between items-center">
+      <div class="flex flex-col gap-1">
+        <div class="font-bold">Horaires de travail</div>
+        <div class="text-[#707070]">Définissez vos horaires de travail</div>
+      </div>
+      <button
+        (click)="updateOrganisationSchedules()"
+        class="hidden md:flex px-4 py-2 border border-primary-500 text-primary-500 rounded-lg bg-card shadow-lg cursor-pointer hover:bg-primary-500 hover:text-white transition duration-300 ease-in-out"
+      >
+        Enregistrer
+      </button>
+    </div>
+    <div *ngIf="isLoadingSchedules">
+      <div class="flex flex-col gap-4 px-8 animate-pulse">
+        <div
+          *ngFor="let i of [].constructor(7)"
+          class="flex flex-row gap-4 justify-between items-center py-1 px-2"
+        >
+          <div class="flex items-center gap-2 w-32">
+            <div class="h-5 w-5 bg-gray-300 rounded"></div>
+            <div class="h-4 w-24 bg-gray-300 rounded"></div>
+          </div>
+
+          <div class="flex flex-row gap-4">
+            <div class="flex flex-col gap-2">
+              <div class="h-4 w-20 bg-gray-200 rounded"></div>
+              <div class="flex flex-row gap-2">
+                <div class="h-8 w-28 bg-gray-200 rounded"></div>
+                <div class="h-8 w-28 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="h-4 w-16 bg-gray-200 rounded"></div>
+              <div class="flex flex-row gap-2">
+                <div class="h-8 w-28 bg-gray-200 rounded"></div>
+                <div class="h-8 w-28 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!isLoadingSchedules" class="flex flex-col gap-4 px-8">
+      <div
+        *ngFor="let day of days; let i = index"
+        class="flex md:flex-row flex-col gap-4 justify-between md:items-center rounded-lg py-1 md:px-2"
+      >
+        <div class="flex items-center gap-2 w-32">
+          <input
+            class="bgtext-primary-500 accent-primary-500 rounded-lg"
+            type="checkbox"
+            [(ngModel)]="day.active"
+            id="day{{ i }}"
+          />
+          <label [for]="'day' + i" class="text-left">
+            {{ day.label }}
+          </label>
+        </div>
+
+        <div class="flex md:flex-row flex-col">
+          <div class="flex flex-col gap-1 ml-4">
+            <div>Horaires</div>
+            <div class="flex flew-row gap-1">
+              <div
+                class="flex items-center border border-gray-300 rounded-md overflow-hidden w-fit"
+              >
+                <span class="bg-gray-100 text-gray-700 px-3 py-2 text-sm"
+                  >De :</span
+                >
+                <input
+                  type="time"
+                  [disabled]="!day.active"
+                  [(ngModel)]="day.horaires.debut"
+                  class="px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                />
+              </div>
+
+              <div
+                class="flex items-center border border-gray-300 rounded-md overflow-hidden w-fit"
+              >
+                <span class="bg-gray-100 text-gray-700 px-3 py-2 text-sm"
+                  >À :</span
+                >
+                <input
+                  type="time"
+                  [disabled]="!day.active"
+                  [(ngModel)]="day.horaires.fin"
+                  class="px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1 ml-4">
+            <div>Pause</div>
+            <div class="flex flew-row gap-1">
+              <div
+                class="flex items-center border border-gray-300 rounded-md overflow-hidden w-fit"
+              >
+                <span class="bg-gray-100 text-gray-700 px-3 py-2 text-sm"
+                  >De :</span
+                >
+                <input
+                  type="time"
+                  [disabled]="!day.active"
+                  [(ngModel)]="day.pause.debut"
+                  class="px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                />
+              </div>
+
+              <div
+                class="flex items-center border border-gray-300 rounded-md overflow-hidden w-fit"
+              >
+                <span class="bg-gray-100 text-gray-700 px-3 py-2 text-sm"
+                  >À :</span
+                >
+                <input
+                  type="time"
+                  [disabled]="!day.active"
+                  [(ngModel)]="day.pause.fin"
+                  class="px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-row justify-end">
+      <button
+        (click)="updateOrganisationSchedules()"
+        class="md:hidden flex px-4 py-2 border border-primary-500 text-primary-500 rounded-lg bg-card shadow-lg cursor-pointer hover:bg-primary-500 hover:text-white transition duration-300 ease-in-out"
+      >
+        Enregistrer
+      </button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,116 @@
+<div>
+  @if(data.length > 0)
+  {
+  <table class="table-fixed w-full text-center mt-4 text-gray-400">
+    <thead>
+      <tr class="border-b-2 border-gray-200 text-sm">
+        <th *ngIf="isOrganisationProvider" class="text-center mt-1 items-center flex">
+          <span class="mr-5"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.75" y="0.75" width="16.5" height="16.5" rx="3.25" stroke="#4B465C" stroke-width="1.5" />
+              <rect x="0.75" y="0.75" width="16.5" height="16.5" rx="3.25" stroke="white" stroke-opacity="0.6"
+                stroke-width="1.5" />
+            </svg>
+          </span>
+          <span class="font-medium text-[#4B465C]"> MATIÈRE</span>
+        </th>
+        <th *ngIf="!isOrganisationProvider" class="text-center mt-1 items-center flex">
+          <span class="mr-5"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.75" y="0.75" width="16.5" height="16.5" rx="3.25" stroke="#4B465C" stroke-width="1.5" />
+              <rect x="0.75" y="0.75" width="16.5" height="16.5" rx="3.25" stroke="white" stroke-opacity="0.6"
+                stroke-width="1.5" />
+            </svg>
+          </span>
+          <span class="font-medium text-[#4B465C]"> CLASSE</span>
+        </th>
+        <th class="mb-3 items-center font-medium text-[#4B465C]">
+          <div class="flex items-center mb-3">
+            <span class="mr-2"> ENSEIGNANT </span>
+            <span><svg width="18" height="32" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 11.25L9 6.75L4.5 11.25" stroke="#4B465C" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M13.5 11.25L9 6.75L4.5 11.25" stroke="white" stroke-opacity="0.5" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M4.5 20.75L9 25.25L13.5 20.75" stroke="#4B465C" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M4.5 20.75L9 25.25L13.5 20.75" stroke="white" stroke-opacity="0.5" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </div>
+        </th>
+        <th class="items-center font-medium text-[#4B465C]">
+          <div class="flex items-center mb-3">
+            <span class="mr-2"> DATE </span>
+            <span><svg width="18" height="32" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 11.25L9 6.75L4.5 11.25" stroke="#4B465C" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M13.5 11.25L9 6.75L4.5 11.25" stroke="white" stroke-opacity="0.5" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M4.5 20.75L9 25.25L13.5 20.75" stroke="#4B465C" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M4.5 20.75L9 25.25L13.5 20.75" stroke="white" stroke-opacity="0.5" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="!isLoadingData">
+        <tr *ngFor="let course of data.slice(0, 5)">
+          <td *ngIf="isOrganisationProvider()" class="text-left">
+            <div class="flex mt-2 flex-col text-left">
+              <div class="text-primary-500">
+                {{ course.subject_name || course.title || "N/A" }}
+              </div>
+            </div>
+          </td>
+          <td *ngIf="!isOrganisationProvider()" class="text-left">
+            <div class="flex mt-2 flex-col text-left">
+              <div class="text-primary-500">
+                {{ course.class_name || "N/A" }}
+              </div>
+            </div>
+          </td>
+
+          <td class="text-left">
+            {{ course.teacher_name || "N/A" }}
+          </td>
+
+          <td class="text-left">
+            {{ course.scheduled_date | date : "d MMMM y" : "" : "fr" }}
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  }
+  @else{
+  <div class="text-gray text-center m-4">Aucun cours {{getFormatedStatus(status)}}</div>
+  }
+
+</div>
+
+<!-- <table *ngIf="data.length > 0; else noData">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Consultant</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rdv of data">
+        <td>{{ rdv.id }}</td>
+        <td>{{ rdv.created_at | date: 'medium' }}</td>
+        <td>{{ rdv.consultants[0]?.full_name || 'N/A' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <ng-template #noData>
+    <p>Aucun rendez-vous trouvé pour le statut "{{ status }}".</p>
+  </ng-template> -->

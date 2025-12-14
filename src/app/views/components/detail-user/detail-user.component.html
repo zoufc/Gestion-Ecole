@@ -1,0 +1,639 @@
+<div *ngIf="user()" class="flex flex-col gap-10">
+  <!-- <div class="bg-white rounded-lg py-8">
+    <div class="flex flex-col">
+      <div class="flex justify-start items-center mx-auto">
+        <div class="flex justify-between items-center gap-20">
+          <div class="flex flex-row gap-2 items-center">
+            <svg
+              width="50"
+              height="50"
+              viewBox="0 0 38 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_50_5632)">
+                <rect
+                  x="-0.1604"
+                  y="0.0273438"
+                  width="38"
+                  height="38"
+                  fill="#FC2828"
+                  fill-opacity="0.18"
+                />
+                <path
+                  d="M13.4942 24.9195C13.1242 24.9195 12.7667 24.8795 12.4217 24.7995C12.0767 24.7195 11.8392 24.657 11.7092 24.612L11.7917 23.097C11.9467 23.147 12.1217 23.2095 12.3167 23.2845C12.5167 23.3545 12.7592 23.3895 13.0442 23.3895C13.5342 23.3895 13.8692 23.2545 14.0492 22.9845C14.2292 22.7145 14.3192 22.267 14.3192 21.642V13.9245H15.9317V22.0845C15.9317 22.6945 15.8617 23.212 15.7217 23.637C15.5867 24.057 15.3442 24.377 14.9942 24.597C14.6442 24.812 14.1442 24.9195 13.4942 24.9195ZM18.3933 24.7695V13.9245H20.0658V19.362L24.6783 13.9245H26.5683L23.0283 18.1695L26.8983 24.7695H25.1133L21.8658 19.3395L20.0658 21.432V24.7695H18.3933Z"
+                  fill="#FC2828"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_50_5632">
+                  <rect width="38" height="38" rx="19" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <span>{{ user().data.full_name }}</span>
+          </div>
+
+          <div class="flex flex-row gap-2 items-center">
+            <svg
+              width="13"
+              height="10"
+              viewBox="0 0 13 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M2.125 10C1.62772 10 1.15081 9.80246 0.799175 9.45083C0.447544 9.09919 0.25 8.62228 0.25 8.125V1.875C0.25 1.37772 0.447544 0.900806 0.799175 0.549175C1.15081 0.197544 1.62772 0 2.125 0H10.875C11.3723 0 11.8492 0.197544 12.2008 0.549175C12.5525 0.900806 12.75 1.37772 12.75 1.875V8.125C12.75 8.62228 12.5525 9.09919 12.2008 9.45083C11.8492 9.80246 11.3723 10 10.875 10H2.125ZM3.76563 2.6375C3.70196 2.58314 3.62802 2.54212 3.5482 2.51688C3.46837 2.49164 3.38429 2.48269 3.30094 2.49057C3.2176 2.49845 3.13668 2.523 3.063 2.56275C2.98932 2.6025 2.92438 2.65665 2.87203 2.72198C2.81968 2.78731 2.78099 2.8625 2.75826 2.94307C2.73552 3.02364 2.72921 3.10796 2.73969 3.19102C2.75016 3.27408 2.77722 3.35419 2.81926 3.42659C2.86129 3.499 2.91744 3.56222 2.98438 3.6125L5.32813 5.48812C5.66068 5.75438 6.07399 5.89945 6.5 5.89945C6.92601 5.89945 7.33932 5.75438 7.67188 5.48812L10.0156 3.61313C10.0797 3.56183 10.1331 3.49841 10.1727 3.42648C10.2123 3.35456 10.2373 3.27554 10.2464 3.19394C10.2554 3.11234 10.2483 3.02976 10.2255 2.95091C10.2026 2.87205 10.1644 2.79848 10.1131 2.73438C10.0618 2.67027 9.99841 2.6169 9.92648 2.57731C9.85456 2.53772 9.77554 2.51268 9.69394 2.50363C9.61234 2.49458 9.52976 2.50168 9.45091 2.52455C9.37206 2.54741 9.29848 2.58558 9.23438 2.63687L6.89063 4.51188C6.77977 4.60063 6.642 4.64898 6.5 4.64898C6.358 4.64898 6.22023 4.60063 6.10938 4.51188L3.76563 2.6375Z"
+                fill="black"
+                fill-opacity="0.66"
+              />
+            </svg>
+            <span> {{ user().data.email }} </span>
+          </div>
+
+          <div class="flex flex-row gap-2 items-center">
+            <svg
+              width="15"
+              height="16"
+              viewBox="0 0 15 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.50062 1.75C10.9525 1.75 13.7506 4.54813 13.7506 8C13.7506 11.4519 10.9525 14.25 7.50062 14.25C6.39609 14.2519 5.31098 13.9596 4.35687 13.4031L1.25312 14.25L2.09812 11.145C1.54122 10.1906 1.24868 9.10501 1.25062 8C1.25062 4.54813 4.04875 1.75 7.50062 1.75ZM5.37062 5.0625L5.24562 5.0675C5.1648 5.07307 5.08584 5.0943 5.01312 5.13C4.94535 5.16844 4.88347 5.21644 4.82937 5.2725C4.75437 5.34313 4.71187 5.40437 4.66624 5.46375C4.43507 5.76431 4.3106 6.13332 4.31249 6.5125C4.31375 6.81875 4.39374 7.11688 4.51874 7.39563C4.77437 7.95937 5.19499 8.55625 5.74999 9.10938C5.88374 9.2425 6.015 9.37625 6.15625 9.50063C6.84589 10.1078 7.66767 10.5456 8.55624 10.7794L8.91125 10.8337C9.02687 10.84 9.1425 10.8313 9.25875 10.8256C9.44074 10.816 9.61843 10.7668 9.77937 10.6813C9.86115 10.639 9.94102 10.5931 10.0187 10.5437C10.0187 10.5437 10.0452 10.5258 10.0969 10.4875C10.1812 10.425 10.2331 10.3806 10.3031 10.3075C10.3556 10.2533 10.3994 10.1904 10.4344 10.1188C10.4831 10.0169 10.5319 9.8225 10.5519 9.66062C10.5669 9.53687 10.5625 9.46938 10.5606 9.4275C10.5581 9.36063 10.5025 9.29125 10.4419 9.26188L10.0781 9.09875C10.0781 9.09875 9.53437 8.86188 9.20187 8.71063C9.16706 8.69547 9.12979 8.68679 9.09187 8.685C9.0491 8.68053 9.00587 8.6853 8.96511 8.69899C8.92435 8.71269 8.88701 8.73499 8.85562 8.76437C8.8525 8.76312 8.81062 8.79875 8.35875 9.34625C8.33281 9.3811 8.29708 9.40744 8.25612 9.42191C8.21516 9.43638 8.17082 9.43833 8.12875 9.4275C8.08801 9.41664 8.04812 9.40286 8.00937 9.38625C7.93187 9.35375 7.90499 9.34125 7.85187 9.31875C7.49304 9.16244 7.1609 8.95092 6.8675 8.69188C6.78875 8.62313 6.71562 8.54812 6.64062 8.47563C6.39475 8.24013 6.18046 7.97374 6.00312 7.68313L5.96624 7.62375C5.94016 7.58362 5.91877 7.54063 5.90249 7.49563C5.87875 7.40375 5.94062 7.33 5.94062 7.33C5.94062 7.33 6.09249 7.16375 6.16312 7.07375C6.23187 6.98625 6.29 6.90125 6.3275 6.84063C6.40125 6.72188 6.42437 6.6 6.38562 6.50563C6.21062 6.07812 6.02979 5.65292 5.84312 5.23C5.80624 5.14625 5.69687 5.08625 5.5975 5.07437C5.56375 5.07021 5.52999 5.06687 5.49624 5.06437C5.41233 5.05956 5.32818 5.0604 5.24437 5.06687L5.37062 5.0625Z"
+                fill="black"
+                fill-opacity="0.66"
+              />
+            </svg>
+            <span> {{ user().data.phone }} </span>
+          </div>
+          <div
+            class="flex flex-row gap-2 items-center cursor-pointer"
+            (click)="toggleUserStatus(user())"
+          >
+            <svg
+              width="62"
+              height="44"
+              viewBox="0 0 58 44"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.5 22C10.5 15.6487 15.6487 10.5 22 10.5H42C48.3513 10.5 53.5 15.6487 53.5 22C53.5 28.3513 48.3513 33.5 42 33.5H22C15.6487 33.5 10.5 28.3513 10.5 22Z"
+                [attr.fill]="user().data.status ? '#4CAF50' : '#FC2828'"
+                fill-opacity="0.18"
+                [attr.stroke]="user().data.status ? '#4CAF50' : '#FC2828'"
+              />
+              <path
+                d="M15 22C15 17.5817 18.5817 14 23 14C27.4183 14 31 17.5817 31 22C31 26.4183 27.4183 30 23 30C18.5817 30 15 26.4183 15 22Z"
+                [attr.fill]="user().data.status ? '#4CAF50' : '#FC2828'"
+                [attr.transform]="
+                  user().data.status ? 'translate(18, 0)' : 'translate(0, 0)'
+                "
+              />
+            </svg>
+            <span>{{ user().data.status ? "Activé" : "Désactivé" }}</span>
+          </div>
+
+          <div class="relative">
+            <button
+              (click)="toggleDropdown()"
+              class="flex flex-row items-center"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.5 6C10.5 5.79 10.5 5.6865 10.512 5.5995C10.5502 5.32456 10.677 5.0696 10.8733 4.87332C11.0696 4.67704 11.3246 4.55018 11.5995 4.512C11.685 4.5 11.79 4.5 12 4.5C12.21 4.5 12.3135 4.5 12.4005 4.512C12.6754 4.55018 12.9304 4.67704 13.1267 4.87332C13.323 5.0696 13.4498 5.32456 13.488 5.5995C13.5 5.685 13.5 5.79 13.5 6C13.5 6.21 13.5 6.3135 13.488 6.4005C13.4498 6.67544 13.323 6.9304 13.1267 7.12668C12.9304 7.32296 12.6754 7.44982 12.4005 7.488C12.315 7.5 12.21 7.5 12 7.5C11.79 7.5 11.6865 7.5 11.5995 7.488C11.3246 7.44982 11.0696 7.32296 10.8733 7.12668C10.677 6.9304 10.5502 6.67544 10.512 6.4005C10.5 6.315 10.5 6.21 10.5 6ZM10.5 12C10.5 11.79 10.5 11.6865 10.512 11.5995C10.5502 11.3246 10.677 11.0696 10.8733 10.8733C11.0696 10.677 11.3246 10.5502 11.5995 10.512C11.685 10.5 11.79 10.5 12 10.5C12.21 10.5 12.3135 10.5 12.4005 10.512C12.6754 10.5502 12.9304 10.677 13.1267 10.8733C13.323 11.0696 13.4498 11.3246 13.488 11.5995C13.5 11.685 13.5 11.79 13.5 12C13.5 12.21 13.5 12.3135 13.488 12.4005C13.4498 12.6754 13.323 12.9304 13.1267 13.1267C12.9304 13.323 12.6754 13.4498 12.4005 13.488C12.315 13.5 12.21 13.5 12 13.5C11.79 13.5 11.6865 13.5 11.5995 13.488C11.3246 13.4498 11.0696 13.323 10.8733 13.1267C10.677 12.9304 10.5502 12.6754 10.512 12.4005C10.5 12.315 10.5 12.21 10.5 12ZM10.5 18C10.5 17.7915 10.5 17.6865 10.512 17.5995C10.5504 17.3251 10.6772 17.0706 10.8731 16.8746C11.0691 16.6787 11.3236 16.5519 11.598 16.5135C11.6865 16.5015 11.79 16.5015 11.9985 16.5015C12.207 16.5015 12.3135 16.5015 12.399 16.5135C12.6734 16.5519 12.9279 16.6787 13.1239 16.8746C13.3198 17.0706 13.4466 17.3251 13.485 17.5995C13.497 17.6865 13.497 17.7915 13.497 18C13.497 18.2085 13.497 18.3135 13.485 18.4005C13.4466 18.6749 13.3198 18.9294 13.1239 19.1254C12.9279 19.3213 12.6734 19.4481 12.399 19.4865C12.312 19.4985 12.207 19.4985 11.9985 19.4985C11.79 19.4985 11.685 19.4985 11.598 19.4865C11.3236 19.4481 11.0691 19.3213 10.8731 19.1254C10.6772 18.9294 10.5504 18.6749 10.512 18.4005C10.5 18.3135 10.5 18.2085 10.5 18Z"
+                  fill="black"
+                />
+              </svg>
+            </button>
+
+            <div
+              *ngIf="isDropdownOpen"
+              class="absolute right-0 mt-2 w-72 flex justify-center items-center bg-primary-500  rounded-lg shadow-lg z-10"
+            >
+              <ul
+                class="py-2 flex flex-col items-center font-semibold text-white"
+              >
+                <li
+                  class="py-2 hover:text-black cursor-pointer"
+                  (click)="openEditUserDialog(user())"
+                >
+                  Modifier
+                </li>
+                <li
+                  class="py-2 hover:text-black cursor-pointer"
+                  (click)="deleteUser(user().id)"
+                >
+                  Supprimer
+                </li>
+                <li
+                  class="py-2 w-full hover:text-black cursor-pointer"
+                  [routerLink]="['/calendar']"
+                  routerLinkActive="router-link-active"
+                >
+                  Configurer le calendrier
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="bg-white rounded-lg py-8">
+    <div class="flex flex-col">
+      <div class="flex justify-start items-center mx-auto">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-20"
+        >
+          <div class="flex flex-row gap-2 items-center">
+            <svg
+              width="50"
+              height="50"
+              viewBox="0 0 38 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_50_5632)">
+                <rect
+                  x="-0.1604"
+                  y="0.0273438"
+                  width="38"
+                  height="38"
+                  fill="#FC2828"
+                  fill-opacity="0.18"
+                />
+                <path
+                  d="M13.4942 24.9195C13.1242 24.9195 12.7667 24.8795 12.4217 24.7995C12.0767 24.7195 11.8392 24.657 11.7092 24.612L11.7917 23.097C11.9467 23.147 12.1217 23.2095 12.3167 23.2845C12.5167 23.3545 12.7592 23.3895 13.0442 23.3895C13.5342 23.3895 13.8692 23.2545 14.0492 22.9845C14.2292 22.7145 14.3192 22.267 14.3192 21.642V13.9245H15.9317V22.0845C15.9317 22.6945 15.8617 23.212 15.7217 23.637C15.5867 24.057 15.3442 24.377 14.9942 24.597C14.6442 24.812 14.1442 24.9195 13.4942 24.9195ZM18.3933 24.7695V13.9245H20.0658V19.362L24.6783 13.9245H26.5683L23.0283 18.1695L26.8983 24.7695H25.1133L21.8658 19.3395L20.0658 21.432V24.7695H18.3933Z"
+                  fill="#FC2828"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_50_5632">
+                  <rect width="38" height="38" rx="19" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <span class="text-sm md:text-base">{{
+              user().data.full_name
+            }}</span>
+          </div>
+
+          <div class="flex flex-row gap-2 items-center">
+            <svg
+              width="13"
+              height="10"
+              viewBox="0 0 13 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M2.125 10C1.62772 10 1.15081 9.80246 0.799175 9.45083C0.447544 9.09919 0.25 8.62228 0.25 8.125V1.875C0.25 1.37772 0.447544 0.900806 0.799175 0.549175C1.15081 0.197544 1.62772 0 2.125 0H10.875C11.3723 0 11.8492 0.197544 12.2008 0.549175C12.5525 0.900806 12.75 1.37772 12.75 1.875V8.125C12.75 8.62228 12.5525 9.09919 12.2008 9.45083C11.8492 9.80246 11.3723 10 10.875 10H2.125ZM3.76563 2.6375C3.70196 2.58314 3.62802 2.54212 3.5482 2.51688C3.46837 2.49164 3.38429 2.48269 3.30094 2.49057C3.2176 2.49845 3.13668 2.523 3.063 2.56275C2.98932 2.6025 2.92438 2.65665 2.87203 2.72198C2.81968 2.78731 2.78099 2.8625 2.75826 2.94307C2.73552 3.02364 2.72921 3.10796 2.73969 3.19102C2.75016 3.27408 2.77722 3.35419 2.81926 3.42659C2.86129 3.499 2.91744 3.56222 2.98438 3.6125L5.32813 5.48812C5.66068 5.75438 6.07399 5.89945 6.5 5.89945C6.92601 5.89945 7.33932 5.75438 7.67188 5.48812L10.0156 3.61313C10.0797 3.56183 10.1331 3.49841 10.1727 3.42648C10.2123 3.35456 10.2373 3.27554 10.2464 3.19394C10.2554 3.11234 10.2483 3.02976 10.2255 2.95091C10.2026 2.87205 10.1644 2.79848 10.1131 2.73438C10.0618 2.67027 9.99841 2.6169 9.92648 2.57731C9.85456 2.53772 9.77554 2.51268 9.69394 2.50363C9.61234 2.49458 9.52976 2.50168 9.45091 2.52455C9.37206 2.54741 9.29848 2.58558 9.23438 2.63687L6.89063 4.51188C6.77977 4.60063 6.642 4.64898 6.5 4.64898C6.358 4.64898 6.22023 4.60063 6.10938 4.51188L3.76563 2.6375Z"
+                fill="black"
+                fill-opacity="0.66"
+              />
+            </svg>
+            <span class="text-sm md:text-base"> {{ user().data.email }} </span>
+          </div>
+
+          <div class="flex flex-row gap-2 items-center">
+            <svg
+              width="15"
+              height="16"
+              viewBox="0 0 15 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.50062 1.75C10.9525 1.75 13.7506 4.54813 13.7506 8C13.7506 11.4519 10.9525 14.25 7.50062 14.25C6.39609 14.2519 5.31098 13.9596 4.35687 13.4031L1.25312 14.25L2.09812 11.145C1.54122 10.1906 1.24868 9.10501 1.25062 8C1.25062 4.54813 4.04875 1.75 7.50062 1.75ZM5.37062 5.0625L5.24562 5.0675C5.1648 5.07307 5.08584 5.0943 5.01312 5.13C4.94535 5.16844 4.88347 5.21644 4.82937 5.2725C4.75437 5.34313 4.71187 5.40437 4.66624 5.46375C4.43507 5.76431 4.3106 6.13332 4.31249 6.5125C4.31375 6.81875 4.39374 7.11688 4.51874 7.39563C4.77437 7.95937 5.19499 8.55625 5.74999 9.10938C5.88374 9.2425 6.015 9.37625 6.15625 9.50063C6.84589 10.1078 7.66767 10.5456 8.55624 10.7794L8.91125 10.8337C9.02687 10.84 9.1425 10.8313 9.25875 10.8256C9.44074 10.816 9.61843 10.7668 9.77937 10.6813C9.86115 10.639 9.94102 10.5931 10.0187 10.5437C10.0187 10.5437 10.0452 10.5258 10.0969 10.4875C10.1812 10.425 10.2331 10.3806 10.3031 10.3075C10.3556 10.2533 10.3994 10.1904 10.4344 10.1188C10.4831 10.0169 10.5319 9.8225 10.5519 9.66062C10.5669 9.53687 10.5625 9.46938 10.5606 9.4275C10.5581 9.36063 10.5025 9.29125 10.4419 9.26188L10.0781 9.09875C10.0781 9.09875 9.53437 8.86188 9.20187 8.71063C9.16706 8.69547 9.12979 8.68679 9.09187 8.685C9.0491 8.68053 9.00587 8.6853 8.96511 8.69899C8.92435 8.71269 8.88701 8.73499 8.85562 8.76437C8.8525 8.76312 8.81062 8.79875 8.35875 9.34625C8.33281 9.3811 8.29708 9.40744 8.25612 9.42191C8.21516 9.43638 8.17082 9.43833 8.12875 9.4275C8.08801 9.41664 8.04812 9.40286 8.00937 9.38625C7.93187 9.35375 7.90499 9.34125 7.85187 9.31875C7.49304 9.16244 7.1609 8.95092 6.8675 8.69188C6.78875 8.62313 6.71562 8.54812 6.64062 8.47563C6.39475 8.24013 6.18046 7.97374 6.00312 7.68313L5.96624 7.62375C5.94016 7.58362 5.91877 7.54063 5.90249 7.49563C5.87875 7.40375 5.94062 7.33 5.94062 7.33C5.94062 7.33 6.09249 7.16375 6.16312 7.07375C6.23187 6.98625 6.29 6.90125 6.3275 6.84063C6.40125 6.72188 6.42437 6.6 6.38562 6.50563C6.21062 6.07812 6.02979 5.65292 5.84312 5.23C5.80624 5.14625 5.69687 5.08625 5.5975 5.07437C5.56375 5.07021 5.52999 5.06687 5.49624 5.06437C5.41233 5.05956 5.32818 5.0604 5.24437 5.06687L5.37062 5.0625Z"
+                fill="black"
+                fill-opacity="0.66"
+              />
+            </svg>
+            <span class="text-sm md:text-base"> {{ user().data.phone }} </span>
+          </div>
+
+          <div
+            class="flex flex-row gap-2 items-center cursor-pointer"
+            (click)="toggleUserStatus(user())"
+          >
+            <svg
+              width="62"
+              height="44"
+              viewBox="0 0 58 44"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.5 22C10.5 15.6487 15.6487 10.5 22 10.5H42C48.3513 10.5 53.5 15.6487 53.5 22C53.5 28.3513 48.3513 33.5 42 33.5H22C15.6487 33.5 10.5 28.3513 10.5 22Z"
+                [attr.fill]="user().data.status ? '#4CAF50' : '#FC2828'"
+                fill-opacity="0.18"
+                [attr.stroke]="user().data.status ? '#4CAF50' : '#FC2828'"
+              />
+              <path
+                d="M15 22C15 17.5817 18.5817 14 23 14C27.4183 14 31 17.5817 31 22C31 26.4183 27.4183 30 23 30C18.5817 30 15 26.4183 15 22Z"
+                [attr.fill]="user().data.status ? '#4CAF50' : '#FC2828'"
+                [attr.transform]="
+                  user().data.status ? 'translate(18, 0)' : 'translate(0, 0)'
+                "
+              />
+            </svg>
+            <span class="text-sm md:text-base">{{
+              user().data.status ? "Activé" : "Désactivé"
+            }}</span>
+          </div>
+
+          <div class="relative">
+            <button
+              (click)="toggleDropdown()"
+              class="flex flex-row items-center"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.5 6C10.5 5.79 10.5 5.6865 10.512 5.5995C10.5502 5.32456 10.677 5.0696 10.8733 4.87332C11.0696 4.67704 11.3246 4.55018 11.5995 4.512C11.685 4.5 11.79 4.5 12 4.5C12.21 4.5 12.3135 4.5 12.4005 4.512C12.6754 4.55018 12.9304 4.67704 13.1267 4.87332C13.323 5.0696 13.4498 5.32456 13.488 5.5995C13.5 5.685 13.5 5.79 13.5 6C13.5 6.21 13.5 6.3135 13.488 6.4005C13.4498 6.67544 13.323 6.9304 13.1267 7.12668C12.9304 7.32296 12.6754 7.44982 12.4005 7.488C12.315 7.5 12.21 7.5 12 7.5C11.79 7.5 11.6865 7.5 11.5995 7.488C11.3246 7.44982 11.0696 7.32296 10.8733 7.12668C10.677 6.9304 10.5502 6.67544 10.512 6.4005C10.5 6.315 10.5 6.21 10.5 6ZM10.5 12C10.5 11.79 10.5 11.6865 10.512 11.5995C10.5502 11.3246 10.677 11.0696 10.8733 10.8733C11.0696 10.677 11.3246 10.5502 11.5995 10.512C11.685 10.5 11.79 10.5 12 10.5C12.21 10.5 12.3135 10.5 12.4005 10.512C12.6754 10.5502 12.9304 10.677 13.1267 10.8733C13.323 11.0696 13.4498 11.3246 13.488 11.5995C13.5 11.685 13.5 11.79 13.5 12C13.5 12.21 13.5 12.3135 13.488 12.4005C13.4498 12.6754 13.323 12.9304 13.1267 13.1267C12.9304 13.323 12.6754 13.4498 12.4005 13.488C12.315 13.5 12.21 13.5 12 13.5C11.79 13.5 11.6865 13.5 11.5995 13.488C11.3246 13.4498 11.0696 13.323 10.8733 13.1267C10.677 12.9304 10.5502 12.6754 10.512 12.4005C10.5 12.315 10.5 12.21 10.5 12ZM10.5 18C10.5 17.7915 10.5 17.6865 10.512 17.5995C10.5504 17.3251 10.6772 17.0706 10.8731 16.8746C11.0691 16.6787 11.3236 16.5519 11.598 16.5135C11.6865 16.5015 11.79 16.5015 11.9985 16.5015C12.207 16.5015 12.3135 16.5015 12.399 16.5135C12.6734 16.5519 12.9279 16.6787 13.1239 16.8746C13.3198 17.0706 13.4466 17.3251 13.485 17.5995C13.497 17.6865 13.497 17.7915 13.497 18C13.497 18.2085 13.497 18.3135 13.485 18.4005C13.4466 18.6749 13.3198 18.9294 13.1239 19.1254C12.9279 19.3213 12.6734 19.4481 12.399 19.4865C12.312 19.4985 12.207 19.4985 11.9985 19.4985C11.79 19.4985 11.685 19.4985 11.598 19.4865C11.3236 19.4481 11.0691 19.3213 10.8731 19.1254C10.6772 18.9294 10.5504 18.6749 10.512 18.4005C10.5 18.3135 10.5 18.2085 10.5 18Z"
+                  fill="black"
+                />
+              </svg>
+            </button>
+
+            <div
+              *ngIf="isDropdownOpen"
+              class="absolute right-0 mt-2 w-48 md:w-72 flex justify-center items-center bg-primary-500 rounded-lg shadow-lg z-10"
+            >
+              <ul
+                class="py-2 flex flex-col items-center font-semibold text-white"
+              >
+                <li
+                  class="py-2 hover:text-black cursor-pointer"
+                  (click)="openEditUserDialog(user())"
+                >
+                  Modifier
+                </li>
+                <li
+                  class="py-2 hover:text-black cursor-pointer"
+                  (click)="deleteUser(user().id)"
+                >
+                  Supprimer
+                </li>
+                <li
+                  class="py-2 w-full hover:text-black cursor-pointer"
+                  [routerLink]="['/calendar']"
+                  routerLinkActive="router-link-active"
+                >
+                  Configurer le calendrier
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="mb-4 text-gray-500 uppercase">Rendez-vous</h3>
+    <div class="flex flex-col gap-2 bg-white rounded-lg">
+      <div class="overflow-x-auto">
+        <table class="w-full rounded-lg">
+          <thead class="">
+            <tr class="uppercase font-normal">
+              <th class="p-6 border-b border-gray-300 text-left">Visiteurs</th>
+              <th class="p-6 border-b border-gray-300 text-left">Services</th>
+              <th class="p-6 border-b border-gray-300 text-left">Date</th>
+              <th class="p-6 border-b border-gray-300 text-left">Début</th>
+              <th class="p-6 border-b border-gray-300 text-left">Fin</th>
+              <th class="p-6 border-b border-gray-300 text-left">Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-300">
+              <td class="p-6">
+                <div class="flex flex-row gap-2 items-center">
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 38 38"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g clip-path="url(#clip0_50_5632)">
+                      <rect
+                        x="-0.1604"
+                        y="0.0273438"
+                        width="38"
+                        height="38"
+                        fill="#FC2828"
+                        fill-opacity="0.18"
+                      />
+                      <path
+                        d="M13.4942 24.9195C13.1242 24.9195 12.7667 24.8795 12.4217 24.7995C12.0767 24.7195 11.8392 24.657 11.7092 24.612L11.7917 23.097C11.9467 23.147 12.1217 23.2095 12.3167 23.2845C12.5167 23.3545 12.7592 23.3895 13.0442 23.3895C13.5342 23.3895 13.8692 23.2545 14.0492 22.9845C14.2292 22.7145 14.3192 22.267 14.3192 21.642V13.9245H15.9317V22.0845C15.9317 22.6945 15.8617 23.212 15.7217 23.637C15.5867 24.057 15.3442 24.377 14.9942 24.597C14.6442 24.812 14.1442 24.9195 13.4942 24.9195ZM18.3933 24.7695V13.9245H20.0658V19.362L24.6783 13.9245H26.5683L23.0283 18.1695L26.8983 24.7695H25.1133L21.8658 19.3395L20.0658 21.432V24.7695H18.3933Z"
+                        fill="#FC2828"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_50_5632">
+                        <rect width="38" height="38" rx="19" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  <span>{{ user().data.full_name }}</span>
+                </div>
+              </td>
+              <td class="p-2">{{ user().data.roles }}</td>
+              <td class="p-2">
+                <div
+                  class="bg-[#28C76F29] w-20 rounded text-[#28C76F] text-center py-1"
+                >
+                  {{ user().data.status === "active" ? "Active" : "Désactivé" }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-row md:justify-end justify-center gap-1 m-4">
+        <button
+          class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage - 1)"
+          [disabled]="actualPage === 1"
+        >
+          Précédent
+        </button>
+        <button
+          class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage - 1)"
+          [disabled]="actualPage === 1"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g clip-path="url(#clip0_1265_7706)">
+              <path
+                d="M17.5098 3.8701L15.7298 2.1001L5.83984 12.0001L15.7398 21.9001L17.5098 20.1301L9.37984 12.0001L17.5098 3.8701Z"
+                fill="currentColor"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_1265_7706">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+        <button
+          *ngFor="let pageNumber of [].constructor(totalPages); let i = index"
+          (click)="changePage(i + 1)"
+          class="rounded-lg px-4 bg-[#4B465C29] cursor-pointer transition-ease"
+          [ngClass]="{ 'bg-primary-500  text-white': actualPage === i + 1 }"
+        >
+          {{ i + 1 }}
+        </button>
+        <button
+          class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage + 1)"
+          [disabled]="actualPage === totalPages"
+        >
+          Suivant
+        </button>
+        <button
+          class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage + 1)"
+          [disabled]="actualPage === totalPages"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g clip-path="url(#clip0_1265_7724)">
+              <path
+                d="M6.49023 20.1301L8.26023 21.9001L18.1602 12.0001L8.26023 2.1001L6.49023 3.8701L14.6202 12.0001L6.49023 20.1301Z"
+                fill="currentColor"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_1265_7724">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques de paiement -->
+  <div class="mt-8">
+    <h3 class="mb-4 text-gray-500 uppercase">Statistiques de paiement mensuel</h3>
+    <div class="bg-white rounded-lg p-6 shadow-lg">
+      <div *ngIf="isLoadingPaymentStats" class="text-center py-8">
+        <p class="text-gray-500">Chargement des statistiques...</p>
+      </div>
+      <div *ngIf="!isLoadingPaymentStats && paymentStats()" class="flex flex-col gap-6">
+        <!-- Résumé des paiements -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+            <div class="text-sm text-green-600 mb-1">Total payé</div>
+            <div class="text-2xl font-bold text-green-700">
+              {{ formatAmount(paymentStats()?.total_paid || 0) }}
+            </div>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div class="text-sm text-blue-600 mb-1">Total dû</div>
+            <div class="text-2xl font-bold text-blue-700">
+              {{ formatAmount(paymentStats()?.total_due || 0) }}
+            </div>
+          </div>
+          <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+            <div class="text-sm text-yellow-600 mb-1">En attente</div>
+            <div class="text-2xl font-bold text-yellow-700">
+              {{ formatAmount(paymentStats()?.total_pending || 0) }}
+            </div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+            <div class="text-sm text-red-600 mb-1">En retard</div>
+            <div class="text-2xl font-bold text-red-700">
+              {{ formatAmount(paymentStats()?.total_overdue || 0) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Taux de paiement -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-semibold text-gray-700">Taux de paiement</span>
+            <span class="text-lg font-bold text-primary-500">
+              {{ paymentStats()?.payment_rate || 0 }}%
+            </span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div
+              class="bg-primary-500 h-3 rounded-full transition-all duration-300"
+              [style.width.%]="paymentStats()?.payment_rate || 0"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Paiements mensuels -->
+        <div *ngIf="paymentStats()?.monthly_payments && paymentStats()?.monthly_payments.length > 0">
+          <h4 class="text-lg font-semibold mb-4">Historique des paiements mensuels</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="p-3 text-left border-b">Mois</th>
+                  <th class="p-3 text-left border-b">Montant</th>
+                  <th class="p-3 text-left border-b">Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let monthly of paymentStats()?.monthly_payments" class="border-b">
+                  <td class="p-3">{{ getMonthLabel(monthly.month) }}</td>
+                  <td class="p-3 font-semibold">{{ formatAmount(monthly.amount) }}</td>
+                  <td class="p-3">
+                    <span
+                      [ngClass]="getStatusClass(monthly.status)"
+                      class="px-2 py-1 rounded-full text-xs font-semibold"
+                    >
+                      {{ getStatusLabel(monthly.status) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div *ngIf="!paymentStats()?.monthly_payments || paymentStats()?.monthly_payments.length === 0" class="text-center py-8 text-gray-500">
+          Aucun paiement enregistré
+        </div>
+      </div>
+      <div *ngIf="!isLoadingPaymentStats && !paymentStats()" class="text-center py-8 text-gray-500">
+        Aucune statistique disponible
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques de notes -->
+  <div class="mt-8">
+    <h3 class="mb-4 text-gray-500 uppercase">Statistiques de notes</h3>
+    <div class="bg-white rounded-lg p-6 shadow-lg">
+      <div *ngIf="isLoadingGradeStats" class="text-center py-8">
+        <p class="text-gray-500">Chargement des statistiques...</p>
+      </div>
+      <div *ngIf="!isLoadingGradeStats && gradeStats()" class="flex flex-col gap-6">
+        <!-- Résumé des notes -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div class="text-sm text-blue-600 mb-1">Nombre total de notes</div>
+            <div class="text-2xl font-bold text-blue-700">
+              {{ gradeStats()?.total || 0 }}
+            </div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+            <div class="text-sm text-purple-600 mb-1">Moyenne générale</div>
+            <div class="text-2xl font-bold text-purple-700">
+              {{ gradeStats()?.average || 0 }}%
+            </div>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+            <div class="text-sm text-green-600 mb-1">Note maximale</div>
+            <div class="text-2xl font-bold text-green-700">
+              {{ gradeStats()?.max || 0 }}%
+            </div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+            <div class="text-sm text-red-600 mb-1">Note minimale</div>
+            <div class="text-2xl font-bold text-red-700">
+              {{ gradeStats()?.min || 0 }}%
+            </div>
+          </div>
+        </div>
+
+        <!-- Répartition par type -->
+        <div *ngIf="gradeStats()?.byType" class="bg-gray-50 rounded-lg p-4">
+          <h4 class="text-lg font-semibold mb-4">Répartition par type d'évaluation</h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="text-sm text-gray-600">Examens</div>
+              <div class="text-2xl font-bold text-red-600">{{ gradeStats()?.byType?.exam || 0 }}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-600">Devoirs</div>
+              <div class="text-2xl font-bold text-blue-600">{{ gradeStats()?.byType?.homework || 0 }}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-600">Projets</div>
+              <div class="text-2xl font-bold text-purple-600">{{ gradeStats()?.byType?.project || 0 }}</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-600">Quiz</div>
+              <div class="text-2xl font-bold text-green-600">{{ gradeStats()?.byType?.quiz || 0 }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Moyennes par matière -->
+        <div *ngIf="gradeStats()?.bySubject && getSubjectStats().length > 0">
+          <h4 class="text-lg font-semibold mb-4">Moyennes par matière</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="p-3 text-left border-b">Matière</th>
+                  <th class="p-3 text-left border-b">Nombre de notes</th>
+                  <th class="p-3 text-left border-b">Moyenne</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let subject of getSubjectStats()" class="border-b">
+                  <td class="p-3 font-semibold">{{ subject.name }}</td>
+                  <td class="p-3">{{ subject.count }}</td>
+                  <td class="p-3">
+                    <span [ngClass]="getGradeClass(subject.average)" class="font-bold">
+                      {{ subject.average }}%
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div *ngIf="!gradeStats()?.bySubject || getSubjectStats().length === 0" class="text-center py-8 text-gray-500">
+          Aucune note enregistrée
+        </div>
+      </div>
+      <div *ngIf="!isLoadingGradeStats && !gradeStats()" class="text-center py-8 text-gray-500">
+        Aucune statistique disponible
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!user">
+  <p>Chargement des détails de l'utilisateur...</p>
+</div>

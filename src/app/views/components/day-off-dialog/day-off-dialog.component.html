@@ -1,0 +1,71 @@
+<div class="bg-card text-primary-text flex flex-col gap-2 rounded-lg w-full">
+  <div class="bg-primary-500 text-white text-center">
+    <p class="py-2">Date du {{ appointmentDate }}</p>
+  </div>
+  <div class="flex flex-col gap-2 p-4">
+    <div class="flex flex-row gap-1">
+      <input type="radio" [(ngModel)]="blockTypeChoice" id="allDay" name="blockType" value="allDayOption" />
+      <label for="allDay">Bloquer toute la journée</label>
+    </div>
+
+    <div @fadeSlideIn *ngIf="blockTypeChoice == 'allDayOption'" class="flex flex-col gap-2">
+      <textarea name="" id="" [(ngModel)]="reason" placeholder="Raison?"
+        class="border-1 border-gray-100 rounded-lg px-4 py-2"></textarea>
+    </div>
+
+
+    <div class="flex flex-row gap-1">
+      <input type="radio" [(ngModel)]="blockTypeChoice" id="allDay" name="blockType" value="allDayToAnotherOption" />
+      <label for="allDay">Bloquer jusqu'à</label>
+    </div>
+
+    <div @fadeSlideIn *ngIf="blockTypeChoice == 'allDayToAnotherOption'" class="flex flex-col gap-2">
+      <mat-form-field class="create-rdv-choose-date">
+        <mat-label>Choisir une date</mat-label>
+        <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)]="end_date"
+          (dateChange)="onDateChange($event)" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4H7V2H9V4H15V2H17V4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22ZM5 10V20H19V10H5ZM5 6V8H19V6H5ZM17 18H15V16H17V18ZM13 18H11V16H13V18ZM9 18H7V16H9V18ZM17 14H15V12H17V14ZM13 14H11V12H13V14ZM9 14H7V12H9V14Z"
+              fill="#323232" />
+          </svg>
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <textarea name="" id="" [(ngModel)]="reason" placeholder="Raison?"
+        class="border-1 border-gray-100 rounded-lg px-4 py-2"></textarea>
+    </div>
+
+
+    <div class="flex flex-row gap-1">
+      <input type="radio" [(ngModel)]="blockTypeChoice" id="slotTime" name="blockType" value="timeSlotOption" />
+      <label for="slotTime">Bloquer une plage horaire</label>
+    </div>
+    <div @fadeSlideIn class="flex flex-col gap-4" *ngIf="blockTypeChoice == 'timeSlotOption'">
+      <div class="flex flew-row gap-1">
+        <div class="flex items-center border border-gray-300 rounded-md overflow-hidden w-fit">
+          <span class="bg-gray-100 text-gray-700 px-3 py-2 text-sm">De :</span>
+          <input type="time" [(ngModel)]="start_time"
+            class="timeInput px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </div>
+
+        <div class="flex items-center border border-gray-300 rounded-md overflow-hidden w-fit">
+          <span class="bg-gray-100 text-gray-700 px-3 py-2 text-sm">À :</span>
+          <input type="time" [(ngModel)]="end_time"
+            class="timeInput px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500" />
+        </div>
+      </div>
+      <textarea name="" id="" [(ngModel)]="reason" placeholder="Raison?"
+        class="border-1 border-gray-100 rounded-lg px-4 py-2"></textarea>
+    </div>
+    <div *ngIf="blockTypeChoice" (click)="createConsultantDayOff()"
+      class="bg-card text-primary-text rounded border-1 border-primary-500 px-2 py-1 cursor-pointer text-center mt-4">
+      Enregistrer
+    </div>
+  </div>
+</div>
+
+<ngx-spinner name="primary" [fullScreen]="true" type="ball-scale-multiple">
+  <p style="color: white">Patientez svp...</p>
+</ngx-spinner>

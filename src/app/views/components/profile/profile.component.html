@@ -1,0 +1,72 @@
+<div class="p-6 pt-0 text-start">
+
+    <!-- SQUELETTE (affiché en attendant les données) -->
+    <div *ngIf="isLoading" class="animate-pulse">
+        <div class="flex justify-center">
+            <div class="w-80 h-56 bg-gray-300 rounded-lg"></div>
+        </div>
+
+        <div class="h-8 bg-gray-300 rounded w-1/2 mt-5 mb-2"></div>
+
+        <div class="mt-4">
+            <p class="font-semibold text-xl text-gray-700">CONTACT</p>
+
+            <div class="flex items-center gap-2 mt-2">
+                <span>
+                    <div class="w-6 h-6 bg-gray-300"></div>
+                </span>
+                <div class="h-6 bg-gray-300 rounded w-3/4"></div>
+            </div>
+
+            <div class="flex items-center gap-2 mt-2">
+                <span>
+                    <div class="w-6 h-6 bg-gray-300"></div>
+                </span>
+                <div class="h-6 bg-gray-300 rounded w-3/4"></div>
+            </div>
+
+            <div class="flex items-center gap-2 mt-2">
+                <span>
+                    <div class="w-6 h-6 bg-gray-300"></div>
+                </span>
+                <div class="h-6 bg-gray-300 rounded w-3/4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENU FINAL (affiché après chargement) -->
+    <div *ngIf="!isLoading">
+        <div class="flex justify-center">
+            <img [src]="organisationInfo?.data?.logo" class="w-80 h-56 object-cover rounded-lg">
+        </div>
+
+        <h1 class="text-3xl text-gray-800 font-semibold mt-5 mb-2">
+            {{ organisationInfo?.data?.organisation_name }}
+        </h1>
+
+        <div class="mt-14">
+            <p class="font-semibold text-xl text-gray-700">CONTACT</p>
+
+            <div class="flex items-center gap-2 mt-2">
+                <span><img src="/assets/message.svg" alt="Email"></span>
+                <p class="text-lg text-gray-700 hover:text-gray-800">
+                    {{ organisationInfo?.data?.organisation_email }}
+                </p>
+            </div>
+
+            <div class="flex items-center gap-2 mt-2">
+                <span><img src="/assets/phone.svg" alt="Téléphone"></span>
+                <p class="text-lg text-gray-700">{{ organisationInfo?.data?.organisation_phone }}</p>
+            </div>
+
+            <div class="flex items-center gap-2 mt-2">
+                <span><img src="/assets/time.svg" alt="Horaires"></span>
+                <p class="text-lg text-gray-700">
+                    {{ organisationInfo?.data?.organisation_schedules[0]?.start_time | date:'shortTime' }} -
+                    {{ organisationInfo?.data?.organisation_schedules[0]?.end_time | date:'shortTime' }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>

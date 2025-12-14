@@ -1,0 +1,50 @@
+<div
+  @slideIn
+  class="fixed top-0 right-0 h-screen rounded-l-lg w-full md:w-1/2 bg-card text-primary-text shadow-lg transform transition-transform translate-x-0 overflow-y-auto p-4"
+>
+  <div
+    class="flex justify-between items-center p-4 border-b border-[#DBDADE] mb-4"
+  >
+    <h2 class="text-lg font-bold">Notes</h2>
+    <button
+      (click)="closeDialog()"
+      class="text-gray-500 hover:text-gray-700 cursor-pointer"
+    >
+      <div class="px-4 py-2 rounded border-1 border-gray-200 shadow-md">✖</div>
+    </button>
+  </div>
+
+  <div
+    *ngFor="let note of notes"
+    class="flex flex-row justify-between border-b border-gray-200 py-2"
+  >
+    <div class="flex flex-row gap-2">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_1265_6274)">
+          <path
+            d="M14.06 9.02L14.98 9.94L5.92 19H5V18.08L14.06 9.02ZM17.66 3C17.41 3 17.15 3.1 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C18.17 3.09 17.92 3 17.66 3ZM14.06 6.19L3 17.25V21H6.75L17.81 9.94L14.06 6.19Z"
+            fill="#323232"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_1265_6274">
+            <rect width="24" height="24" fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+      <div [innerHTML]="sanitize(note.report)"></div>
+    </div>
+    <div class="flex flex-col text-sm text-[#707070]">
+      <div>{{ note.users.email }}</div>
+      <div>
+        {{ note.updated_at | date : "d MMMM y à HH:mm" : "" : "fr" }}
+      </div>
+    </div>
+  </div>
+</div>

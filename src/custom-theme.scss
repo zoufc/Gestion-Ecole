@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+@use '../src/theme-colors' as my-theme; // location of generated file
+
+html {
+    @include mat.theme((color: (primary: my-theme.$primary-palette,
+                tertiary: my-theme.$tertiary-palette,
+            ),
+            typography: Roboto,
+            density: 0,
+        ));
+}

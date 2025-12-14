@@ -1,0 +1,265 @@
+<div class="flex flex-col">
+  <div class="text-xl font-bold">
+    <span class="text-[#707070]">Accueil / Management /</span>
+    <span class="text-primary-text">Services({{ totalServices }})</span>
+  </div>
+
+  <div class="flex flex-col min-h-100 bg-card text-primary-text rounded-lg p-4 gap-4 mt-8">
+    <p class="font-bold mt-4">Filtrer</p>
+    <div class="flex md:flex-row flex-col justify-between gap-2 min-h-20 items-center">
+      <select id="Status"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 md:w-1/3 w-full"
+        [(ngModel)]="actualStatus" (change)="getServicesList(actualPage, actualLimit)">
+        <option value="" disabled selected>Status</option>
+        <option value="true">Activés</option>
+        <option value="false">Désactivés</option>
+      </select>
+    </div>
+
+    <div class="w-full h-[1px] bg-[#D1D8EB]"></div>
+
+    <div class="flex md:flex-row flex-col justify-between gap-2">
+      <div class="flex flex-row gap-2">
+        <input [formControl]="searchControl" (keyup.enter)="getServicesList(actualPage, actualLimit)" type="text"
+          placeholder="Rechercher"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent" />
+      </div>
+
+      <div class="flex flex-row gap-2">
+        <select id="perPage" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500"
+          [(ngModel)]="actualLimit" (change)="getServicesList(actualPage, actualLimit)">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+        <button *ngIf="abonnementStatus" class="bg-primary-500 rounded-lg px-4 py-2 cursor-pointer"
+          (click)="openCreateServiceDialog()">
+          <div class="flex flex-row items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 3.75V14.25" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M3.75 9H14.25" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <div class="text-white">Nouveau service</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <div class="overflow-x-auto w-full">
+        <table class="w-full custom-table mat-elevation-z8 border-collapse">
+          <thead class="bg-card text-primary-text">
+            <tr>
+              <th class="p-2 border-b text-left">SERVICE</th>
+              <th class="p-2 border-b text-left">DURÉE</th>
+              <th class="p-2 border-b text-left">STATUT</th>
+              <th class="p-2 border-b text-left">PRIX (FCFA)</th>
+              <th class="p-2 border-b text-left">OPTIONS</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="isServiceLoading" class="bg-card">
+            <!-- Skeleton Loader -->
+            <tr *ngFor="let item of [].constructor(5)" class="border-b border-gray-400">
+              <td class="p-3">
+                <div class="h-4 w-10 bg-gray-200 animate-pulse rounded"></div>
+              </td>
+              <td *ngIf="isOrganisationProvider()" class="p-3">
+                <div class="h-4 w-24 bg-gray-200 animate-pulse rounded"></div>
+              </td>
+              <td class="p-3">
+                <div class="h-4 w-24 bg-gray-200 animate-pulse rounded"></div>
+              </td>
+              <td class="p-3">
+                <div class="h-4 w-16 bg-gray-200 animate-pulse rounded"></div>
+              </td>
+
+              <td class="p-3">
+                <div class="flex gap-2">
+                  <div class="h-6 w-6 bg-gray-200 animate-pulse rounded-full"></div>
+                  <div class="h-6 w-6 bg-gray-200 animate-pulse rounded-full"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="!isServiceLoading" class="bg-card">
+            <tr *ngFor="let service of servicesList" class="border-b border-gray-300">
+              <td class="p-2 text-primary-500 font-bold text-lg">
+                {{ service.name }}
+              </td>
+              <td class="p-2">{{ service.duration }}</td>
+              <td class="p-2" [ngClass]="{
+                  'text-green-500': service.status === true,
+                  'text-red-500 ': service.status === false
+                }">
+                {{ service.status ? "Activé" : "Désactivé" }}
+              </td>
+
+              <td class="p-2">{{ service.price }}</td>
+              <td class="p-2">
+                <div class="flex ">
+                  <div #dropdownWrapper class="relative inline-block text-left">
+                    <!-- Bouton -->
+                    <button class="p-2 rounded hover:bg-gray-300 hover:text-black"
+                      (click)="toggleDropdown(service.id,$event)">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M12 8C13.1 8 14 7.1 14 6C14 4.9 13.1 4 12 4C10.9 4 10 4.9 10 6C10 7.1 10.9 8 12 8ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10ZM12 16C10.9 16 10 16.9 10 18C10 19.1 10.9 20 12 20C13.1 20 14 19.1 14 18C14 16.9 13.1 16 12 16Z"
+                          fill="currentColor" />
+                      </svg>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div *ngIf="selectedDropdownId === service.id"
+                      class="absolute left-3 min-w-30 bg-card text-primary-text border border-gray-200 rounded-lg shadow-lg z-50">
+                      <ul class="py-1 text-sm text-primary-text">
+                        <li>
+                          <button
+                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 hover:text-black cursor-pointer"
+                            (click)="viewClassDetails(service.id)">
+                            <div class="flex flex-row items-center gap-2">
+                              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11 3L2 8L11 13L20 8L11 3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 17L11 22L20 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 12L11 17L20 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                              <span>Voir détails</span>
+                            </div>
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 hover:text-black cursor-pointer"
+                            (click)="editService(service)">
+                            <div class="flex flex-row items-center gap-2">
+                              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                  d="M8.24984 6.41699H5.49984C4.48732 6.41699 3.6665 7.2378 3.6665 8.25033V16.5003C3.6665 17.5128 4.48732 18.3337 5.49984 18.3337H13.7498C14.7624 18.3337 15.5832 17.5128 15.5832 16.5003V13.7503"
+                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                                <path
+                                  d="M8.24984 6.41699H5.49984C4.48732 6.41699 3.6665 7.2378 3.6665 8.25033V16.5003C3.6665 17.5128 4.48732 18.3337 5.49984 18.3337H13.7498C14.7624 18.3337 15.5832 17.5128 15.5832 16.5003V13.7503"
+                                  stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                                <path
+                                  d="M8.25 13.7499H11L18.7917 5.95822C19.5511 5.19882 19.5511 3.96761 18.7917 3.20822C18.0323 2.44882 16.8011 2.44882 16.0417 3.20822L8.25 10.9999V13.7499"
+                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                                <path
+                                  d="M8.25 13.7499H11L18.7917 5.95822C19.5511 5.19882 19.5511 3.96761 18.7917 3.20822C18.0323 2.44882 16.8011 2.44882 16.0417 3.20822L8.25 10.9999V13.7499"
+                                  stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                                <path d="M14.6665 4.58301L17.4165 7.33301" stroke="currentColor" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M14.6665 4.58301L17.4165 7.33301" stroke="white" stroke-opacity="0.2"
+                                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                              </svg>
+
+
+                              <span>Modifier</span>
+                            </div>
+                          </button>
+                        </li>
+                        <li>
+                          <button class="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
+                            (click)="deleteService(service.id)">
+                            <div class="flex flex-row items-center gap-2">
+                              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.6665 6.41634H18.3332" stroke="currentColor" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M3.6665 6.41634H18.3332" stroke="white" stroke-opacity="0.2" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M9.16683 10.083V15.583" stroke="currentColor" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M9.16683 10.083V15.583" stroke="white" stroke-opacity="0.2" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M12.8333 10.083V15.583" stroke="currentColor" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M12.8333 10.083V15.583" stroke="white" stroke-opacity="0.2" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                  d="M4.5835 6.41699L5.50016 17.417C5.50016 18.4295 6.32097 19.2503 7.3335 19.2503H14.6668C15.6794 19.2503 16.5002 18.4295 16.5002 17.417L17.4168 6.41699"
+                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                                <path
+                                  d="M4.5835 6.41699L5.50016 17.417C5.50016 18.4295 6.32097 19.2503 7.3335 19.2503H14.6668C15.6794 19.2503 16.5002 18.4295 16.5002 17.417L17.4168 6.41699"
+                                  stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                                <path
+                                  d="M8.25 6.41667V3.66667C8.25 3.16041 8.66041 2.75 9.16667 2.75H12.8333C13.3396 2.75 13.75 3.16041 13.75 3.66667V6.41667"
+                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                                <path
+                                  d="M8.25 6.41667V3.66667C8.25 3.16041 8.66041 2.75 9.16667 2.75H12.8333C13.3396 2.75 13.75 3.16041 13.75 3.66667V6.41667"
+                                  stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                              </svg>
+
+                              <span>
+                                Supprimer
+                              </span>
+                            </div>
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-row md:justify-end justify-center gap-1 m-4">
+        <button class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer">
+          Précédent
+        </button>
+        <button class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_1265_7706)">
+              <path
+                d="M17.5098 3.8701L15.7298 2.1001L5.83984 12.0001L15.7398 21.9001L17.5098 20.1301L9.37984 12.0001L17.5098 3.8701Z"
+                fill="currentColor" />
+            </g>
+            <defs>
+              <clipPath id="clip0_1265_7706">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+        <button (click)="changePage(i + 1)" class="rounded-lg px-4 bg-[currentColor29] cursor-pointer transition-ease"
+          [ngClass]="{ 'bg-primary-500  text-white': actualPage == i + 1 }"
+          *ngFor="let pageNumber of [].constructor(totalPages); let i = index">
+          {{ i + 1 }}
+        </button>
+        <button class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer">
+          Suivant
+        </button>
+        <button class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_1265_7724)">
+              <path
+                d="M6.49023 20.1301L8.26023 21.9001L18.1602 12.0001L8.26023 2.1001L6.49023 3.8701L14.6202 12.0001L6.49023 20.1301Z"
+                fill="currentColor" />
+            </g>
+            <defs>
+              <clipPath id="clip0_1265_7724">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner name="primary" [fullScreen]="true" type="ball-scale-multiple">
+  <p style="color: white">Patientez svp...</p>
+</ngx-spinner>

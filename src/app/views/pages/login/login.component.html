@@ -1,0 +1,31 @@
+<div class="flex flex-row w-full h-screen">
+  <div class="hidden md:flex flex-col md:basis-2/5 bg-primary-500 items-center justify-center gap-2 p-16">
+    <img [src]="logoConfig.main" alt="Logo Gestion École" class="max-w-xl max-h-64 object-contain" />
+    <div class="text-white font-bold tracking-wide text-center font-mono">
+      Votre solution sur mesure <br />
+      de gestion d'école
+    </div>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()"
+    class="flex w-full flex-col md:basis-3/5 bg-card text-primary-text items-center justify-center gap-4">
+    <img [src]="logoConfig.mobile" alt="Logo Gestion École" class="md:hidden px-4 max-h-48 object-contain" />
+    <div class="font-bold text-xl font-mono">Connectez-vous</div>
+    <div class="flex flex-col gap-4 md:w-1/3 w-1/2">
+      <div class="flex flex-col">
+        <div class="text-gray-500">Email</div>
+        <input type="email" class="rounded-lg border border-gray-300 p-2" formControlName="email" />
+      </div>
+      <div class="flex flex-col">
+        <div class="text-gray-500">Mot de passe</div>
+        <input type="password" class="rounded-lg border border-gray-300 p-2" formControlName="password" />
+      </div>
+      <button class="rounded-full mt-4 px-4 py-2 text-white bg-primary-500 cursor-pointer" type="submit">
+        Se connecter
+      </button>
+    </div>
+    <div (click)="goToForgotPassword()" class="flex flex-row justify-start text-primary-500 text-sm cursor-pointer">
+      Mot de passe oublié?
+    </div>
+  </form>
+</div>

@@ -1,0 +1,39 @@
+<div class="w-full flex flex-col gap-4">
+  <p class="text-xl font-bold pl-2">
+    <span class="text-[#707070]">Gestion École /</span>
+    <span class="text-primary-text">Paramètres</span>
+  </p>
+  <div class="flex md:flex-row flex-col gap-4">
+    <div
+      class="flex bg-card text-primary-text md:bg-transparent flex-col md:basis-1/5 md:h-screen px-4 md:px-0 md:ml-0 sticky top-0"
+      id="leftNav"
+    >
+      <ul>
+        <li
+          *ngFor="let item of settingsItems"
+          class="w-full bg-primary-500 m-2 px-4 py-2 rounded-lg cursor-pointer"
+          [ngClass]="{
+            'bg-primary-500  text-white': selectedItem.name == item.name,
+            hidden: item.isForOwner === false && selectedItem.name !== item.name
+          }"
+          (click)="selectItem(item)"
+        >
+          <div class="flex flex-row gap-2">
+            <div [innerHTML]="item.icon"></div>
+            <div>{{ item.name }}</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="flex flex-col md:basis-4/5 w-full p-4 pl-0 pt-0">
+      <div class="flex flex-col basis-4/5 w-full gap-4">
+        <app-setting-info-section
+          *ngIf="selectedItem.name == 'Informations'"
+        ></app-setting-info-section>
+        <app-setting-course-section
+          *ngIf="selectedItem.name == 'Configuration'"
+        ></app-setting-course-section>
+      </div>
+    </div>
+  </div>
+</div>

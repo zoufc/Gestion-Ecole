@@ -1,0 +1,204 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #e0e6f1;
+  --color-primary-100: #bfcbe3;
+  --color-primary-200: #7f96c7;
+  --color-primary-300: #4967a7;
+  --color-primary-400: #2d3f67;
+  --color-primary-500: #0d3b66; /* Bleu foncé */
+  --color-primary-600: #0a2e50;
+  --color-primary-700: #071f3b;
+  --color-primary-800: #041326;
+  --color-primary-900: #02090f;
+  --color-primary-950: #010407;
+  --color-card: white;
+  --color-primary-text: var(--color-side-bar-color);
+  --color-global-bg: #f3f0f0;
+  --color-success-bg: #28c76f29;
+  --color-warning-bg: #c7a22829;
+  --color-alert-bg: #0d3b6629; /* bleu clair pour alert */
+  --color-gray: #707070;
+  --color-editor: white;
+  --color-side-bar-color: #4b465c;
+}
+
+[data-theme="dark"] {
+  --color-primary-50: #dfe5f1;
+  --color-primary-100: #bfcae3;
+  --color-primary-200: #7f96c7;
+  --color-primary-300: #4967a7;
+  --color-primary-400: #2d3f67;
+  --color-card: #111827;
+  --color-primary-600: #0a2e50;
+  --color-primary-700: #071f3b;
+  --color-primary-800: #041326;
+  --color-primary-900: #02090f;
+  --color-primary-950: #010407;
+  --color-primary-text: white;
+  --color-global-bg: #1f2937;
+  --color-success-bg: #28c76f29;
+  --color-warning-bg: #c7a22829;
+  --color-alert-bg: #0d3b6629; /* bleu clair pour alert */
+  --color-gray: #707070;
+  --color-editor: #707070;
+  --color-side-bar-color: white;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Public Sans";
+}
+body {
+  margin: 0;
+}
+
+.custom-table {
+  background-color: white !important;
+}
+
+.fc-toolbar-chunk button {
+  background-color: #0d3b6645 !important;
+  color: #0d3b66 !important; /* Texte en bleu */
+  border: 1px solid #0d3b66 !important; /* Bordure bleu */
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.fc-toolbar-chunk button:hover {
+  background-color: #0d3b66 !important; /* Fond bleu au survol */
+  color: white !important;
+}
+
+.custom-dialog .mat-dialog-container {
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  width: auto;
+  overflow: hidden;
+}
+
+.custom-dialog-right .mat-dialog-container {
+  padding: 0;
+  border-radius: 0;
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
+  width: auto;
+  overflow: hidden;
+  position: fixed !important;
+  right: 0 !important;
+  top: 0 !important;
+  margin: 0 !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+}
+
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  padding: 8px;
+  color: inherit;
+  outline: none;
+  box-shadow: none;
+}
+
+.custom-select:focus {
+  border-color: #0d3b66;
+  box-shadow: none;
+}
+
+.custom-select option:checked {
+  background-color: transparent !important;
+  color: inherit;
+}
+
+.custom-select option:hover {
+  background-color: #0d3b661c !important;
+}
+
+/* Buttons, alerts et calendriers remplacés en bleu */
+.mat-calendar-body-selected {
+  background-color: #0d3b66 !important;
+  color: white !important;
+}
+
+.mat-calendar-body-today {
+  border-color: #0d3b66 !important;
+}
+
+.bg-red-500 {
+  background-color: #0d3b66 !important;
+  color: white !important;
+}
+
+option:checked {
+  background-color: #0d3b66 !important;
+  color: white !important;
+}
+
+option-item:hover {
+  background-color: #0d3b66 !important;
+  color: white !important;
+}
+
+.stepper-calendar {
+  display: flex;
+  background-color: white !important;
+  flex-direction: column;
+  position: relative;
+  box-shadow: none !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: white !important;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cdk-overlay-backdrop {
+  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Swall buttons */
+.swal-btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.swal-btn-danger {
+  background-color: #0d3b66; /* bleu au lieu rouge */
+  color: white;
+}
+
+.swal-btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.swal-btn-infos {
+  background-color: #17a2b8;
+  color: white;
+}
+
+/* Autres styles conservés */
+.NgxEditor__Content,
+.NgxEditor__MenuBar {
+  background-color: var(--color-card) !important;
+  border: 1px var(--color-primary-text) solid !important;
+  color: var(--color-primary-text) !important;
+}
+
+/* ... le reste du fichier reste identique, juste remplacer #FC2828 par #0D3B66 */

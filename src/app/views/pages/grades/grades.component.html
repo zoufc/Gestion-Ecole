@@ -1,0 +1,116 @@
+<div class="flex flex-col">
+  <div class="flex justify-between items-center mb-4">
+    <p class="text-xl font-bold">
+      <span class="text-[#707070]">Accueil / Gestion /</span>
+      <span class="text-primary-text">Notes</span>
+      <span *ngIf="currentView === 'grades' && selectedClassName" class="text-[#707070]"> / {{ selectedClassName }}</span>
+    </p>
+    <button *ngIf="currentView === 'grades'" (click)="backToClasses()" class="flex items-center gap-2 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Retour aux classes
+    </button>
+  </div>
+
+  <!-- Vue Liste des Classes -->
+  <div *ngIf="currentView === 'classes'" class="flex flex-col min-h-100 bg-card text-primary-text shadow-lg rounded-lg p-4 gap-4 mt-8">
+    <p class="font-bold mt-4 text-primary-500">Sélectionner une classe</p>
+    
+    <div class="grid md:grid-cols-3 gap-4">
+      <div *ngFor="let classItem of classesList" 
+        (click)="selectClass(classItem)"
+        class="bg-white rounded-lg p-6 border-2 border-gray-200 hover:border-primary-500 cursor-pointer transition-all hover:shadow-lg">
+        <div class="flex flex-col items-center text-center">
+          <div class="bg-primary-100 rounded-full p-4 mb-4">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#7367F0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="#7367F0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="#7367F0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">{{ classItem.name }}</h3>
+          <p class="text-gray-600 text-sm">{{ classItem.level }}</p>
+          <p class="text-gray-500 text-xs mt-2">{{ classItem.student_count || 0 }} élève(s)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vue Notes de la Classe -->
+  <div *ngIf="currentView === 'grades'" class="flex flex-col min-h-100 bg-card text-primary-text shadow-lg rounded-lg p-4 gap-4 mt-8">
+    <p class="font-bold mt-4 text-primary-500">Notes de la classe: {{ selectedClassName }}</p>
+    
+    <!-- Filtres -->
+    <div class="flex md:flex-row flex-col gap-4">
+      <input [(ngModel)]="search" (input)="onFilterChange()" type="text" placeholder="Rechercher un élève..."
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent md:w-1/3 w-full" />
+
+      <select [(ngModel)]="actualType" (change)="onFilterChange()"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-transparent md:w-1/3 w-full">
+        <option *ngFor="let type of typeOptions" [value]="type.value">{{ type.label }}</option>
+      </select>
+
+      <select [(ngModel)]="selectedSubject" (change)="onFilterChange()"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-transparent md:w-1/3 w-full">
+        <option value="all">Toutes les matières</option>
+        <option *ngFor="let subject of subjectsList" [value]="subject.id">{{ subject.name }}</option>
+      </select>
+    </div>
+
+    <div class="w-full h-[1px] bg-[#D1D8EB]"></div>
+
+    <!-- Liste des élèves avec leurs notes -->
+    <div class="flex flex-col gap-4">
+      <div *ngIf="isLoadingGrades" class="space-y-4">
+        <div *ngFor="let i of [1,2,3]" class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <ngx-skeleton-loader appearance="line" 
+            [theme]="{ 'border-radius': '8px', width: '100%', height: '60px', margin: 0 }">
+          </ngx-skeleton-loader>
+        </div>
+      </div>
+
+      <div *ngFor="let student of gradesByStudent()" 
+        (click)="openStudentGradesDialog(student)"
+        class="bg-white rounded-lg p-4 border-2 border-gray-200 hover:border-primary-500 cursor-pointer transition-all hover:shadow-lg">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-4">
+            <div class="bg-primary-100 rounded-full p-3">
+              <svg width="32" height="32" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_50_5632)">
+                  <rect x="-0.1604" y="0.0273438" width="38" height="38" fill="#FC2828" fill-opacity="0.18" />
+                  <path
+                    d="M13.4942 24.9195C13.1242 24.9195 12.7667 24.8795 12.4217 24.7995C12.0767 24.7195 11.8392 24.657 11.7092 24.612L11.7917 23.097C11.9467 23.147 12.1217 23.2095 12.3167 23.2845C12.5167 23.3545 12.7592 23.3895 13.0442 23.3895C13.5342 23.3895 13.8692 23.2545 14.0492 22.9845C14.2292 22.7145 14.3192 22.267 14.3192 21.642V13.9245H15.9317V22.0845C15.9317 22.6945 15.8617 23.212 15.7217 23.637C15.5867 24.057 15.3442 24.377 14.9942 24.597C14.6442 24.812 14.1442 24.9195 13.4942 24.9195ZM18.3933 24.7695V13.9245H20.0658V19.362L24.6783 13.9245H26.5683L23.0283 18.1695L26.8983 24.7695H25.1133L21.8658 19.3395L20.0658 21.432V24.7695H18.3933Z"
+                    fill="#FC2828" />
+                </g>
+                <defs>
+                  <clipPath id="clip0_50_5632">
+                    <rect width="38" height="38" rx="19" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+            <div>
+              <div class="font-bold text-lg">{{ student.student_name }}</div>
+              <div class="text-sm text-gray-600">N° {{ student.student_number }}</div>
+              <div class="text-xs text-gray-500">{{ student.grades.length }} note(s)</div>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="text-sm text-gray-600 mb-1">Moyenne</div>
+            <div [ngClass]="getGradeClass(student.average)" class="text-2xl font-bold">
+              {{ student.average }}%
+            </div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mt-2 text-gray-400">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoadingGrades && gradesByStudent().length === 0" class="text-center py-12 text-gray-500">
+        <p class="text-lg">Aucune note enregistrée pour cette classe</p>
+      </div>
+    </div>
+  </div>
+</div>

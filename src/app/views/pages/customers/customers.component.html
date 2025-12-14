@@ -1,0 +1,297 @@
+<div class="flex flex-col">
+  <p class="text-xl font-bold">
+    <span class="text-[#707070]">Accueil / Gestion /</span>
+    <span class="text-primary-text">Élèves ({{ total }})</span>
+  </p>
+
+  <div class="flex flex-col min-h-100 bg-card text-primary-text shadow-lg rounded-lg p-4 gap-4 mt-8">
+    <p class="font-bold mt-4 text-primary-500">Filtrer</p>
+    <div class="flex md:flex-row flex-col justify-between gap-2 min-h-20 items-center">
+      <input [(ngModel)]="name" (input)="getMyVisitorList(actualPage, actualLimit)" type="text"
+        placeholder="Rechercher par prénom"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent md:w-1/3 w-full" />
+      <input [(ngModel)]="phone" (input)="getMyVisitorList(actualPage, actualLimit)" type="text"
+        placeholder="Rechercher par téléphone"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent md:w-1/3 w-full" />
+      <input [(ngModel)]="email" (input)="getMyVisitorList(actualPage, actualLimit)" type="text"
+        placeholder="Rechercher par Email"
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent md:w-1/3 w-full" />
+    </div>
+
+    <div class="w-full h-[1px] bg-[#D1D8EB]"></div>
+
+    <div class="flex md:flex-row flex-col justify-between gap-2">
+      <div class="flex flex-row gap-2">
+        <!-- <input
+          [formControl]="searchControl"
+          (keyup.enter)="getMyVisitorList(actualPage, actualLimit)"
+          type="text"
+          placeholder="Rechercher par cni"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500  focus:border-transparent"
+        /> -->
+      </div>
+
+      <div class="flex flex-row gap-2">
+        <select id="perPage" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500"
+          [(ngModel)]="actualLimit" (change)="getMyVisitorList(actualPage, actualLimit)">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
+        <select id="perPage"
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 bg-[#A8AAAE29]">
+          <option value="" disabled selected>Export</option>
+          <option value="10">PDF</option>
+          <option value="25">Excel</option>
+        </select>
+        <button *ngIf="abonnementStatus" class="bg-primary-500 rounded-lg px-4 py-2 cursor-pointer"
+          (click)="openCreateUserDialog()">
+          <div class="flex flex-row items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 3.75V14.25" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M3.75 9H14.25" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <div class="text-white">Nouvel utilisateur</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr>
+              <th class="p-2 border-b text-left">Élèves</th>
+              <th class="p-2 border-b text-left">Téléphone</th>
+              <th class="p-2 border-b text-left">Email</th>
+              <!-- <th class="p-2 border-b text-left">Qualité</th>  -->
+              <th class="p-2 border-b text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of usersList" class="border-b border-gray-300">
+              <td class="p-2">
+                <div class="flex flex-row gap-2 items-center">
+                  <svg width="30" height="30" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_50_5632)">
+                      <rect x="-0.1604" y="0.0273438" width="38" height="38" fill="#FC2828" fill-opacity="0.18" />
+                      <path
+                        d="M13.4942 24.9195C13.1242 24.9195 12.7667 24.8795 12.4217 24.7995C12.0767 24.7195 11.8392 24.657 11.7092 24.612L11.7917 23.097C11.9467 23.147 12.1217 23.2095 12.3167 23.2845C12.5167 23.3545 12.7592 23.3895 13.0442 23.3895C13.5342 23.3895 13.8692 23.2545 14.0492 22.9845C14.2292 22.7145 14.3192 22.267 14.3192 21.642V13.9245H15.9317V22.0845C15.9317 22.6945 15.8617 23.212 15.7217 23.637C15.5867 24.057 15.3442 24.377 14.9942 24.597C14.6442 24.812 14.1442 24.9195 13.4942 24.9195ZM18.3933 24.7695V13.9245H20.0658V19.362L24.6783 13.9245H26.5683L23.0283 18.1695L26.8983 24.7695H25.1133L21.8658 19.3395L20.0658 21.432V24.7695H18.3933Z"
+                        fill="#FC2828" />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_50_5632">
+                        <rect width="38" height="38" rx="19" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  <span>{{ user.name }}</span>
+                </div>
+              </td>
+              <td class="p-2">{{ user.phone }}</td>
+              <td class="p-2">{{ user.email }}</td>
+              <!-- <td class="p-2">{{ user.cni }}</td>
+                <td class="p-2">{{ user.qualite }} </td> -->
+
+              <td class="p-2">
+                <div class="flex flex-row gap-2">
+                  <div class="cursor-pointer" (click)="openEditUserDialog(user)">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M8.25008 6.41602H5.50008C4.48756 6.41602 3.66675 7.23683 3.66675 8.24935V16.4993C3.66675 17.5119 4.48756 18.3327 5.50008 18.3327H13.7501C14.7626 18.3327 15.5834 17.5119 15.5834 16.4993V13.7493"
+                        stroke="#4B465C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path
+                        d="M8.25008 6.41602H5.50008C4.48756 6.41602 3.66675 7.23683 3.66675 8.24935V16.4993C3.66675 17.5119 4.48756 18.3327 5.50008 18.3327H13.7501C14.7626 18.3327 15.5834 17.5119 15.5834 16.4993V13.7493"
+                        stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                      <path
+                        d="M8.25 13.7499H11L18.7917 5.95822C19.5511 5.19882 19.5511 3.96761 18.7917 3.20822C18.0323 2.44882 16.8011 2.44882 16.0417 3.20822L8.25 10.9999V13.7499"
+                        stroke="#4B465C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path
+                        d="M8.25 13.7499H11L18.7917 5.95822C19.5511 5.19882 19.5511 3.96761 18.7917 3.20822C18.0323 2.44882 16.8011 2.44882 16.0417 3.20822L8.25 10.9999V13.7499"
+                        stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                      <path d="M14.6667 4.58398L17.4167 7.33398" stroke="#4B465C" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M14.6667 4.58398L17.4167 7.33398" stroke="white" stroke-opacity="0.2" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <div class="cursor-pointer" (click)="deleteUser(user.name,user.id)">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3.66675 6.41732H18.3334" stroke="#4B465C" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                      <path d="M3.66675 6.41732H18.3334" stroke="white" stroke-opacity="0.2" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M9.16659 10.084V15.584" stroke="#4B465C" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                      <path d="M9.16659 10.084V15.584" stroke="white" stroke-opacity="0.2" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M12.8333 10.084V15.584" stroke="#4B465C" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                      <path d="M12.8333 10.084V15.584" stroke="white" stroke-opacity="0.2" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <path
+                        d="M4.58325 6.41602L5.49992 17.416C5.49992 18.4285 6.32073 19.2493 7.33325 19.2493H14.6666C15.6791 19.2493 16.4999 18.4285 16.4999 17.416L17.4166 6.41602"
+                        stroke="#4B465C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path
+                        d="M4.58325 6.41602L5.49992 17.416C5.49992 18.4285 6.32073 19.2493 7.33325 19.2493H14.6666C15.6791 19.2493 16.4999 18.4285 16.4999 17.416L17.4166 6.41602"
+                        stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                      <path
+                        d="M8.25 6.41667V3.66667C8.25 3.16041 8.66041 2.75 9.16667 2.75H12.8333C13.3396 2.75 13.75 3.16041 13.75 3.66667V6.41667"
+                        stroke="#4B465C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path
+                        d="M8.25 6.41667V3.66667C8.25 3.16041 8.66041 2.75 9.16667 2.75H12.8333C13.3396 2.75 13.75 3.16041 13.75 3.66667V6.41667"
+                        stroke="white" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <!-- <div class="cursor-pointer">
+                      <div class="relative">
+                        <button
+                          (click)="toggleDropdown()"
+                          class="flex flex-row items-center"
+                        >
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.5 6C10.5 5.79 10.5 5.6865 10.512 5.5995C10.5502 5.32456 10.677 5.0696 10.8733 4.87332C11.0696 4.67704 11.3246 4.55018 11.5995 4.512C11.685 4.5 11.79 4.5 12 4.5C12.21 4.5 12.3135 4.5 12.4005 4.512C12.6754 4.55018 12.9304 4.67704 13.1267 4.87332C13.323 5.0696 13.4498 5.32456 13.488 5.5995C13.5 5.685 13.5 5.79 13.5 6C13.5 6.21 13.5 6.3135 13.488 6.4005C13.4498 6.67544 13.323 6.9304 13.1267 7.12668C12.9304 7.32296 12.6754 7.44982 12.4005 7.488C12.315 7.5 12.21 7.5 12 7.5C11.79 7.5 11.6865 7.5 11.5995 7.488C11.3246 7.44982 11.0696 7.32296 10.8733 7.12668C10.677 6.9304 10.5502 6.67544 10.512 6.4005C10.5 6.315 10.5 6.21 10.5 6ZM10.5 12C10.5 11.79 10.5 11.6865 10.512 11.5995C10.5502 11.3246 10.677 11.0696 10.8733 10.8733C11.0696 10.677 11.3246 10.5502 11.5995 10.512C11.685 10.5 11.79 10.5 12 10.5C12.21 10.5 12.3135 10.5 12.4005 10.512C12.6754 10.5502 12.9304 10.677 13.1267 10.8733C13.323 11.0696 13.4498 11.3246 13.488 11.5995C13.5 11.685 13.5 11.79 13.5 12C13.5 12.21 13.5 12.3135 13.488 12.4005C13.4498 12.6754 13.323 12.9304 13.1267 13.1267C12.9304 13.323 12.6754 13.4498 12.4005 13.488C12.315 13.5 12.21 13.5 12 13.5C11.79 13.5 11.6865 13.5 11.5995 13.488C11.3246 13.4498 11.0696 13.323 10.8733 13.1267C10.677 12.9304 10.5502 12.6754 10.512 12.4005C10.5 12.315 10.5 12.21 10.5 12ZM10.5 18C10.5 17.7915 10.5 17.6865 10.512 17.5995C10.5504 17.3251 10.6772 17.0706 10.8731 16.8746C11.0691 16.6787 11.3236 16.5519 11.598 16.5135C11.6865 16.5015 11.79 16.5015 11.9985 16.5015C12.207 16.5015 12.3135 16.5015 12.399 16.5135C12.6734 16.5519 12.9279 16.6787 13.1239 16.8746C13.3198 17.0706 13.4466 17.3251 13.485 17.5995C13.497 17.6865 13.497 17.7915 13.497 18C13.497 18.2085 13.497 18.3135 13.485 18.4005C13.4466 18.6749 13.3198 18.9294 13.1239 19.1254C12.9279 19.3213 12.6734 19.4481 12.399 19.4865C12.312 19.4985 12.207 19.4985 11.9985 19.4985C11.79 19.4985 11.685 19.4985 11.598 19.4865C11.3236 19.4481 11.0691 19.3213 10.8731 19.1254C10.6772 18.9294 10.5504 18.6749 10.512 18.4005C10.5 18.3135 10.5 18.2085 10.5 18Z"
+                              fill="black"
+                            />
+                          </svg>
+                        </button>
+            
+                        <div
+                          *ngIf="isDropdownOpen"
+                          class="absolute right-0 mt-2 w-48 md:w-72 flex justify-center items-center bg-primary-500  rounded-lg shadow-lg z-10"
+                        >
+                        <ul class="py-2 flex flex-col items-center font-semibold text-white">
+                          <li class="w-full text-center">
+                            <a
+                              href="mailto:{{user.email(user.id)}}"
+                              class="block py-2 hover:text-black cursor-pointer"
+                              aria-label="Contacter par mail"
+                            >
+                              Contacter par mail
+                            </a>
+                          </li>
+                  
+                          <li class="w-full text-center">
+                            <a
+                              href="https://wa.me/{{user.phone}}"
+                              class="block py-2 hover:text-black cursor-pointer"
+                              aria-label="Contacter par WhatsApp"
+                            >
+                              Contacter par WhatsApp
+                            </a>
+                          </li>
+                        </ul>
+                        </div>
+                      </div>
+                    </div> -->
+                  <div class="cursor-pointer">
+                    <div class="relative">
+                      <button (click)="toggleDropdown(user.id)" class="flex flex-row items-center focus:outline-none"
+                        aria-label="Ouvrir le menu" aria-expanded="isDropdownOpen(user.id)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M10.5 6C10.5 5.79 10.5 5.6865 10.512 5.5995C10.5502 5.32456 10.677 5.0696 10.8733 4.87332C11.0696 4.67704 11.3246 4.55018 11.5995 4.512C11.685 4.5 11.79 4.5 12 4.5C12.21 4.5 12.3135 4.5 12.4005 4.512C12.6754 4.55018 12.9304 4.67704 13.1267 4.87332C13.323 5.0696 13.4498 5.32456 13.488 5.5995C13.5 5.685 13.5 5.79 13.5 6C13.5 6.21 13.5 6.3135 13.488 6.4005C13.4498 6.67544 13.323 6.9304 13.1267 7.12668C12.9304 7.32296 12.6754 7.44982 12.4005 7.488C12.315 7.5 12.21 7.5 12 7.5C11.79 7.5 11.6865 7.5 11.5995 7.488C11.3246 7.44982 11.0696 7.32296 10.8733 7.12668C10.677 6.9304 10.5502 6.67544 10.512 6.4005C10.5 6.315 10.5 6.21 10.5 6ZM10.5 12C10.5 11.79 10.5 11.6865 10.512 11.5995C10.5502 11.3246 10.677 11.0696 10.8733 10.8733C11.0696 10.677 11.3246 10.5502 11.5995 10.512C11.685 10.5 11.79 10.5 12 10.5C12.21 10.5 12.3135 10.5 12.4005 10.512C12.6754 10.5502 12.9304 10.677 13.1267 10.8733C13.323 11.0696 13.4498 11.3246 13.488 11.5995C13.5 11.685 13.5 11.79 13.5 12C13.5 12.21 13.5 12.3135 13.488 12.4005C13.4498 12.6754 13.323 12.9304 13.1267 13.1267C12.9304 13.323 12.6754 13.4498 12.4005 13.488C12.315 13.5 12.21 13.5 12 13.5C11.79 13.5 11.6865 13.5 11.5995 13.488C11.3246 13.4498 11.0696 13.323 10.8733 13.1267C10.677 12.9304 10.5502 12.6754 10.512 12.4005C10.5 12.315 10.5 12.21 10.5 12ZM10.5 18C10.5 17.7915 10.5 17.6865 10.512 17.5995C10.5504 17.3251 10.6772 17.0706 10.8731 16.8746C11.0691 16.6787 11.3236 16.5519 11.598 16.5135C11.6865 16.5015 11.79 16.5015 11.9985 16.5015C12.207 16.5015 12.3135 16.5015 12.399 16.5135C12.6734 16.5519 12.9279 16.6787 13.1239 16.8746C13.3198 17.0706 13.4466 17.3251 13.485 17.5995C13.497 17.6865 13.497 17.7915 13.497 18C13.497 18.2085 13.497 18.3135 13.485 18.4005C13.4466 18.6749 13.3198 18.9294 13.1239 19.1254C12.9279 19.3213 12.6734 19.4481 12.399 19.4865C12.312 19.4985 12.207 19.4985 11.9985 19.4985C11.79 19.4985 11.685 19.4985 11.598 19.4865C11.3236 19.4481 11.0691 19.3213 10.8731 19.1254C10.6772 18.9294 10.5504 18.6749 10.512 18.4005C10.5 18.3135 10.5 18.2085 10.5 18Z"
+                            fill="black" />
+                        </svg>
+                      </button>
+
+                      <div *ngIf="isDropdownOpen(user.id)"
+                        class="absolute right-0 mt-2 w-48 md:w-72 bg-primary-500 rounded-lg shadow-lg z-10">
+                        <ul class="py-2 flex flex-col items-center font-semibold text-white">
+                          <li class="w-full text-center">
+                            <a href="mailto:{{ user.email }}" class="block py-2 hover:text-black cursor-pointer"
+                              aria-label="Contacter par mail">
+                              Contacter par mail
+                            </a>
+                          </li>
+
+                          <li class="w-full text-center">
+                            <a href="https://wa.me/{{ user.phone }}" class="block py-2 hover:text-black cursor-pointer"
+                              aria-label="Contacter par WhatsApp">
+                              Contacter par WhatsApp
+                            </a>
+                          </li>
+
+                          <li class="w-full text-center">
+                            <a href="sms:{{ user.phone }}" class="block py-2 hover:text-black cursor-pointer"
+                              aria-label="Contacter par SMS">
+                              Contacter par SMS
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-row md:justify-end justify-center gap-1 m-4">
+        <button class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage - 1)" [disabled]="actualPage === 1">
+          Précédent
+        </button>
+        <button class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage - 1)" [disabled]="actualPage === 1">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_1265_7706)">
+              <path
+                d="M17.5098 3.8701L15.7298 2.1001L5.83984 12.0001L15.7398 21.9001L17.5098 20.1301L9.37984 12.0001L17.5098 3.8701Z"
+                fill="currentColor" />
+            </g>
+            <defs>
+              <clipPath id="clip0_1265_7706">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+        <button *ngFor="let pageNumber of [].constructor(totalPages); let i = index" (click)="changePage(i + 1)"
+          class="rounded-lg px-4 bg-[#4B465C29] cursor-pointer transition-ease"
+          [ngClass]="{ 'bg-primary-500  text-white': actualPage === i + 1 }">
+          {{ i + 1 }}
+        </button>
+        <button class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage + 1)" [disabled]="actualPage === totalPages">
+          Suivant
+        </button>
+        <button class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer"
+          (click)="changePage(actualPage + 1)" [disabled]="actualPage === totalPages">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_1265_7724)">
+              <path
+                d="M6.49023 20.1301L8.26023 21.9001L18.1602 12.0001L8.26023 2.1001L6.49023 3.8701L14.6202 12.0001L6.49023 20.1301Z"
+                fill="currentColor" />
+            </g>
+            <defs>
+              <clipPath id="clip0_1265_7724">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner name="primary" [fullScreen]="true" type="ball-scale-multiple">
+  <p style="color: white">Chargement...</p>
+</ngx-spinner>
