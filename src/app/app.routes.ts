@@ -11,7 +11,6 @@ import { SideNavBarComponent } from './views/components/side-nav-bar/side-nav-ba
 import { authGuard } from './guards/auth.guard';
 import { CustomersComponent } from './views/pages/customers/customers.component';
 import { DetailUserComponent } from './views/components/detail-user/detail-user.component';
-import { roleGuard } from './guards/role.guard';
 import { ForgotPasswordComponent } from './views/pages/forgot-password/forgot-password.component';
 import { OtpVerificationComponent } from './views/pages/otp-verification/otp-verification.component';
 import { ResetPasswordComponent } from './views/pages/reset-password/reset-password.component';
@@ -45,7 +44,6 @@ export const routes: Routes = [
       {
         path: 'overview',
         component: OverviewComponent,
-        canActivate: [roleGuard],
       },
       {
         path: 'courses',
@@ -72,22 +70,16 @@ export const routes: Routes = [
           {
             path: '',
             component: ServicesComponent,
-            canActivate: [roleGuard],
-            data: { role: 'admin' },
           },
           {
             path: ':id',
             component: ClassDetailsComponent,
-            canActivate: [roleGuard],
-            data: { role: 'admin' },
           },
         ],
       },
       {
         path: 'subjects',
         component: ServicesComponent, // Réutilisé pour les matières
-        canActivate: [roleGuard],
-        data: { role: 'admin' },
       },
       // Alias pour compatibilité
       {
@@ -98,26 +90,18 @@ export const routes: Routes = [
       {
         path: 'students',
         component: CustomersComponent, // Réutilisé pour les élèves
-        canActivate: [roleGuard],
-        data: { role: 'admin' },
       },
       {
         path: 'payments',
         component: PaymentsComponent,
-        canActivate: [roleGuard],
-        data: { role: 'admin' },
       },
       {
         path: 'grades',
         component: GradesComponent,
-        canActivate: [roleGuard],
-        data: { role: 'admin' },
       },
       {
         path: 'teachers',
         component: StaffListComponent, // Réutilisé pour les enseignants
-        canActivate: [roleGuard],
-        data: { role: 'admin' },
       },
       // Alias pour compatibilité
       {
@@ -142,8 +126,6 @@ export const routes: Routes = [
       {
         path: 'detailUser/:id',
         component: DetailUserComponent,
-        canActivate: [roleGuard],
-        data: { role: 'admin' },
       },
       { path: '**', redirectTo: 'overview' },
     ],

@@ -34,15 +34,30 @@ export class AuthService {
   }
 
   getRedirectRouteByRole(role: string): string {
-    switch (role) {
+    if (!role) {
+      return '/overview';
+    }
+
+    // Normaliser le rôle (lowercase)
+    const normalizedRole = role.toLowerCase().trim();
+
+    switch (normalizedRole) {
       case UserRoles.owner:
+      case 'company_owner':
+      case 'owner':
       case UserRoles.director:
+      case 'director':
       case UserRoles.administrator:
+      case 'administrator':
         return '/overview';
       case UserRoles.consultant:
+      case 'company_consultant':
+      case 'consultant':
       case UserRoles.teacher:
+      case 'teacher':
         return '/courses';
       case UserRoles.secretary:
+      case 'secretary':
         return '/students';
       default:
         return '/overview';

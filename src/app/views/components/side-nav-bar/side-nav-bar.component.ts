@@ -34,11 +34,11 @@ export class SideNavBarComponent {
     parametres: false,
   };
 
-  user!: any;
+  user: any = null;
 
   statusAbonnement!: any;
 
-  isProfileMenuOpen!: boolean;
+  isProfileMenuOpen: boolean = false;
   @ViewChild('profileMenu') profileMenuRef!: ElementRef;
 
   toggleDropdown(menu: string) {
@@ -75,10 +75,12 @@ export class SideNavBarComponent {
         }
       }
     });
+    // Charger les informations de l'utilisateur
+    this.loadUserInfo();
+
     effect(() => {
       console.log('USER_UPDATE', this.userService.updateUserInfo());
-      this.user = getLocalData('userInfos');
-      this.user = JSON.parse(this.user);
+      this.loadUserInfo();
     });
 
     // effect(() => {
@@ -88,13 +90,25 @@ export class SideNavBarComponent {
     this.statusAbonnement = getLocalData('statusAbonnement');
     this.statusAbonnement = Boolean(this.statusAbonnement);
     console.log('STATUS_ABN', this.statusAbonnement);
-
-    this.user = getLocalData('userInfos');
-    this.user = JSON.parse(this.user);
   }
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
+    // Charger les informations de l'utilisateur au démarrage
+    this.loadUserInfo();
+  }
+
+  loadUserInfo() {
+    try {
+      const userData = getLocalData('userInfos');
+      if (userData) {
+        this.user = JSON.parse(userData);
+      }
+    } catch (error) {
+      console.error(
+        'Erreur lors du chargement des informations utilisateur:',
+        error
+      );
+      this.user = null;
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -129,24 +143,65 @@ export class SideNavBarComponent {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }
 
-  getFormateduserRole(role: string) {
-    switch (role) {
+  getFormateduserRole(role: string): string {
+    if (!role) return 'Utilisateur';
+
+    switch (role.toLowerCase()) {
       case UserRoles.teacher:
+      case 'teacher':
+      case 'enseignant':
         return 'Enseignant';
       case UserRoles.administrator:
+      case 'administrator':
+      case 'administrateur':
         return 'Administrateur';
       case UserRoles.director:
+      case 'director':
+      case 'directeur':
         return 'Directeur';
       case UserRoles.secretary:
+      case 'secretary':
+      case 'secretaire':
+      case 'secrétaire':
         return 'Secrétaire';
       // Compatibilité avec les anciens rôles
       case UserRoles.consultant:
+      case 'company_consultant':
+      case 'consultant':
         return 'Consultant';
       case UserRoles.owner:
+      case 'company_owner':
+      case 'owner':
+      case 'proprietaire':
+      case 'propriétaire':
         return 'Propriétaire';
       default:
-        return '';
+        return role.charAt(0).toUpperCase() + role.slice(1).replace(/_/g, ' ');
     }
+  }
+
+  getUserDisplayName(): string {
+    if (!this.user) {
+      // Recharger les informations utilisateur si elles ne sont pas disponibles
+      this.loadUserInfo();
+      if (!this.user) {
+        return 'Utilisateur';
+      }
+    }
+
+    // Gérer différents formats de nom
+    const firstName =
+      this.user.first_name || this.user.firstName || this.user.prenom || '';
+    const lastName =
+      this.user.last_name || this.user.lastName || this.user.nom || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    // Si aucun nom n'est trouvé, utiliser l'email comme alternative
+    if (!fullName && this.user.email) {
+      return this.user.email;
+    }
+
+    return fullName || 'Utilisateur';
   }
 
   logout() {

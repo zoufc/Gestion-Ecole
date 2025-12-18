@@ -7,7 +7,8 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class ApiService {
-  private API_URL = environment.base_url; // Base URL de l'API
+  // Base URL de l'API, par défaut localhost si non configuré
+  private API_URL = environment.base_url || 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -16,7 +17,15 @@ export class ApiService {
   }
 
   post<T>(endpoint: string, body: any, options?: any) {
-    return this.http.post<T>(`${this.API_URL}/${endpoint}`, body, options);
+    // Ne pas ajouter de headers si l'endpoint est /login (géré par l'interceptor)
+    const defaultHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
+    return this.http.post<T>(`${this.API_URL}/${endpoint}`, body, {
+      ...options,
+      headers: options?.headers || defaultHeaders,
+    });
   }
 
   put<T>(endpoint: string, body: any, options?: any) {
