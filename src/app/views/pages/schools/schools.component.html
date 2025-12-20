@@ -3,14 +3,12 @@
   <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
     <div>
       <p class="text-xl font-bold pl-2">
-        <span class="text-[#707070]">Gestion École /</span>
+        <span class="text-gray">Gestion École /</span>
         <span class="text-primary-text">Écoles</span>
       </p>
     </div>
-    <button
-      (click)="openCreateSchoolDialog()"
-      class="rounded px-4 py-2 bg-primary-500 text-white border-primary-500 border-1 hover:bg-primary-600 cursor-pointer transition-colors flex items-center gap-2"
-    >
+    <button (click)="openCreateSchoolDialog()"
+      class="rounded px-4 py-2 bg-primary-500 text-white border-primary-500 border-1 hover:bg-primary-600 cursor-pointer transition-colors flex items-center gap-2">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
       </svg>
@@ -22,12 +20,9 @@
   <div class="bg-card text-primary-text shadow-lg p-4 rounded-lg">
     <div class="flex flex-col md:flex-row gap-4">
       <div class="flex-1">
-        <input
-          type="text"
-          [formControl]="searchControl"
+        <input type="text" [formControl]="searchControl"
           class="w-full px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none"
-          placeholder="Rechercher une école (nom, adresse, directeur)..."
-        />
+          placeholder="Rechercher une école (nom, adresse, directeur)..." />
       </div>
     </div>
   </div>
@@ -62,9 +57,7 @@
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z"
-                    fill="currentColor"
-                    opacity="0.3"
-                  />
+                    fill="currentColor" opacity="0.3" />
                 </svg>
                 <p>Aucune école trouvée</p>
                 <p class="text-sm">{{ search ? 'Essayez une autre recherche' : 'Ajoutez votre première école' }}</p>
@@ -73,19 +66,14 @@
           </tr>
 
           <!-- Schools List -->
-          <tr
-            *ngFor="let school of schoolsList()"
-            class="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-          >
+          <tr *ngFor="let school of schoolsList()" class="border-b border-gray-200 hover:bg-gray-50 transition-colors">
             <td class="p-4">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-lg bg-primary-500 bg-opacity-10 flex items-center justify-center">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z"
-                      fill="currentColor"
-                      class="text-primary-500"
-                    />
+                      fill="currentColor" class="text-primary-500" />
                   </svg>
                 </div>
                 <span class="font-medium">{{ school.name || school.school_name || 'Sans nom' }}</span>
@@ -99,30 +87,20 @@
             </td>
             <td class="p-4">
               <div class="flex gap-2">
-                <button
-                  (click)="editSchool(school)"
-                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
-                  title="Modifier"
-                >
+                <button (click)="editSchool(school)"
+                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer" title="Modifier">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.12 5.12L18.87 8.87L20.71 7.04Z"
-                      fill="currentColor"
-                      class="text-blue-600"
-                    />
+                      fill="currentColor" class="text-blue-600" />
                   </svg>
                 </button>
-                <button
-                  (click)="deleteSchool(school._id || school.id, school.name || school.school_name)"
-                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
-                  title="Supprimer"
-                >
+                <button (click)="deleteSchool(school._id || school.id, school.name || school.school_name)"
+                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer" title="Supprimer">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z"
-                      fill="currentColor"
-                      class="text-red-600"
-                    />
+                      fill="currentColor" class="text-red-600" />
                   </svg>
                 </button>
               </div>
@@ -133,4 +111,3 @@
     </div>
   </div>
 </div>
-
