@@ -164,11 +164,6 @@ export class SideNavBarComponent {
       case 'secretaire':
       case 'secrétaire':
         return 'Secrétaire';
-      // Compatibilité avec les anciens rôles
-      case UserRoles.consultant:
-      case 'company_consultant':
-      case 'consultant':
-        return 'Consultant';
       case UserRoles.owner:
       case 'company_owner':
       case 'owner':

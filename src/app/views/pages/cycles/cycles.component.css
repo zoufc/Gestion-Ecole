@@ -1,0 +1,13 @@
+/* Styles spécifiques pour la page des cycles */
+table {
+  min-width: 100%;
+}
+
+tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+

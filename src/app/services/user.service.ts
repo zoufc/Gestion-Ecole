@@ -1,8 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
-import { getLocalData } from '../utils/local-storage-service';
-import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
+import { HttpParams, HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -19,21 +18,14 @@ export class UserService {
   users$ = this.usersSubject.asObservable();
   constructor(private apiService: ApiService, private http: HttpClient) {}
 
-  getMyConsultantsList(filters: any = {}): Observable<any> {
+  getTeachersList(filters: any = {}): Observable<any> {
     let params = new HttpParams();
     for (const key in filters) {
       if (filters[key]) {
         params = params.set(key, filters[key]);
       }
     }
-    return this.apiService.get('users/list', { params });
-  }
-  // getMyExcelList(): Observable<Blob> {
-  //   return this.http.get('users/export/excel', { responseType: 'blob' })
-  //   ;
-  // }
-  getConsultantsList() {
-    return this.apiService.get('users/consultants/list');
+    return this.apiService.get('users', { params });
   }
 
   getMyExcelList(): Observable<Blob> {
@@ -62,14 +54,8 @@ export class UserService {
   }
   createUser(userData: any): Observable<any> {
     console.log('Request Payload:', userData);
-
-    const accessToken = getLocalData('accessToken');
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    });
-
-    return this.apiService.post('users/create', userData, { headers }).pipe(
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.post('users/create', userData).pipe(
       catchError((error) => {
         console.error('API Error:', error);
         throw error;
@@ -78,20 +64,13 @@ export class UserService {
   }
 
   updateUser(userId: number, userData: any): Observable<any> {
-    const accessToken = getLocalData('accessToken');
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    });
-
-    return this.apiService
-      .put(`users/${userId}/update`, userData, { headers })
-      .pipe(
-        catchError((error) => {
-          console.error('API Error:', error);
-          throw error;
-        })
-      );
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.put(`users/${userId}/update`, userData).pipe(
+      catchError((error) => {
+        console.error('API Error:', error);
+        throw error;
+      })
+    );
   }
 
   updateMyInfos(userData: any) {
@@ -125,6 +104,13 @@ export class UserService {
   getBreaks() {
     return this.apiService.get(`breaks/list`);
   }
+
+  getDirectors(): Observable<any> {
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    // Récupérer les utilisateurs avec le rôle director
+    return this.apiService.get('users');
+  }
+
   updatedAppointment = signal(false);
   updatedDaysOff = signal(false);
   updateUserInfo = signal(false);

@@ -1,0 +1,154 @@
+<div class="w-full flex flex-col gap-4">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div>
+      <p class="text-xl font-bold pl-2">
+        <span class="text-[#707070]">Gestion École /</span>
+        <span class="text-primary-text">Classes</span>
+      </p>
+    </div>
+    <button
+      (click)="openCreateClassDialog()"
+      class="rounded px-4 py-2 bg-primary-500 text-white border-primary-500 border-1 hover:bg-primary-600 cursor-pointer transition-colors flex items-center gap-2"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
+      </svg>
+      Ajouter une classe
+    </button>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="bg-card text-primary-text shadow-lg p-4 rounded-lg">
+    <div class="flex flex-col md:flex-row gap-4">
+      <div class="flex-1">
+        <input
+          type="text"
+          [formControl]="searchControl"
+          class="w-full px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none"
+          placeholder="Rechercher une classe (nom, école, cycle, enseignant)..."
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Classes Table -->
+  <div class="bg-card text-primary-text shadow-lg rounded-lg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr class="bg-card text-primary-text border-b border-gray-300">
+            <th class="p-4 text-left font-semibold">Nom de la classe</th>
+            <th class="p-4 text-left font-semibold">École</th>
+            <th class="p-4 text-left font-semibold">Cycle</th>
+            <th class="p-4 text-left font-semibold">Enseignant</th>
+            <th class="p-4 text-left font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loading State -->
+          <tr *ngIf="isLoading">
+            <td colspan="5" class="p-8 text-center">
+              <div class="flex justify-center items-center gap-2">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"></div>
+                <span>Chargement des classes...</span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="!isLoading && classesList().length === 0">
+            <td colspan="5" class="p-8 text-center text-gray-500">
+              <div class="flex flex-col items-center gap-2">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                </svg>
+                <p>Aucune classe trouvée</p>
+                <p class="text-sm">{{ search ? 'Essayez une autre recherche' : 'Ajoutez votre première classe' }}</p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Classes List -->
+          <tr
+            *ngFor="let classItem of classesList()"
+            class="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+          >
+            <td class="p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-primary-500 bg-opacity-10 flex items-center justify-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z"
+                      fill="currentColor"
+                      class="text-primary-500"
+                    />
+                  </svg>
+                </div>
+                <span class="font-medium">{{ classItem.name || 'Sans nom' }}</span>
+              </div>
+            </td>
+            <td class="p-4">
+              <span class="text-gray-600">{{ getSchoolName(classItem) }}</span>
+            </td>
+            <td class="p-4">
+              <span>{{ getCycleName(classItem) }}</span>
+            </td>
+            <td class="p-4">
+              <span>{{ getTeacherName(classItem) }}</span>
+            </td>
+            <td class="p-4">
+              <div class="flex gap-2">
+                <button
+                  (click)="goToClassDetails(classItem._id || classItem.id)"
+                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
+                  title="Voir détails"
+                >
+                  <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="1.83" stroke="#4B465C" stroke-width="1.5" />
+                    <path
+                      d="M20.17 11C17.72 15.28 14.67 17.42 11 17.42C7.33 17.42 4.28 15.28 1.83 11C4.28 6.72 7.33 4.58 11 4.58C14.67 4.58 17.72 6.72 20.17 11"
+                      stroke="#4B465C"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  (click)="editClass(classItem)"
+                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
+                  title="Modifier"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.12 5.12L18.87 8.87L20.71 7.04Z"
+                      fill="currentColor"
+                      class="text-blue-600"
+                    />
+                  </svg>
+                </button>
+                <button
+                  (click)="deleteClass(classItem._id || classItem.id, classItem.name)"
+                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
+                  title="Supprimer"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z"
+                      fill="currentColor"
+                      class="text-red-600"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

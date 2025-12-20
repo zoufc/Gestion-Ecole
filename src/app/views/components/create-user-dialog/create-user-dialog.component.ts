@@ -83,13 +83,13 @@ export class CreateUserDialogComponent {
         if (this.isEditing && this.currentUserId) {
           this.userService.updateUser(this.currentUserId, userData).subscribe({
             next: (response) => {
-              console.log('Consultant mis à jour avec succès:', response);
+              console.log('Utilisateur mis à jour avec succès:', response);
               this.userUpdated.emit();
               this.dialogRef.close();
 
             },
             error: (error) => {
-              console.error('Erreur lors de la mise à jour du consultant:', error);
+              console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
               
               const errorDetails = error?.error?.message;
     
@@ -104,14 +104,14 @@ export class CreateUserDialogComponent {
         } else {
           this.userService.createUser(userData).subscribe({
             next: (response) => {
-              console.log('Consultant créé avec succès:', response);
+              console.log('Utilisateur créé avec succès:', response);
               this.userUpdated.emit();
               this.dialogRef.close();
 
-              this.toast.showSuccess('Consultant créé avec succès')
+              this.toast.showSuccess('Utilisateur créé avec succès')
             },
             error: (error) => {
-              console.error('Erreur lors de la création du consultant:', error.error.message);
+              console.error('Erreur lors de la création de l\'utilisateur:', error.error.message);
               this.toast.showError(error.error.message);
 
               const errorDetails = error?.error?.message;

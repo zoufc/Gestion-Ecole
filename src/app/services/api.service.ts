@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class ApiService {
   // Base URL de l'API, par défaut localhost si non configuré
-  private API_URL = environment.base_url || 'http://localhost:3000/api';
+  private API_URL = environment.base_url || 'http://localhost:3050/api';
 
   constructor(private http: HttpClient) {}
 

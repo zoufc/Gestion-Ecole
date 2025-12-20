@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, catchError, Observable } from 'rxjs';
-import { getLocalData } from '../utils/local-storage-service';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -32,15 +31,9 @@ export class CustomerService {
   // }
 
   createUser(userData: any): Observable<any> {
-    console.log('Request Payload:', userData); 
-  
-    const accessToken = getLocalData('accessToken');
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    });
-  
-    return this.apiService.post('visitors/create', userData, { headers }).pipe(
+    console.log('Request Payload:', userData);
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.post('visitors/create', userData).pipe(
       catchError((error) => {
         console.error('API Error:', error);
         throw error; 
@@ -48,16 +41,9 @@ export class CustomerService {
     );
   }
 
-
-  
   updateUser(userId: number, userData: any): Observable<any> {
-    const accessToken = getLocalData('accessToken');
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    });
-  
-    return this.apiService.put(`visitors/${userId}/update`, userData, { headers }).pipe(
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.put(`visitors/${userId}/update`, userData).pipe(
       catchError((error) => {
         console.error('API Error:', error);
         throw error; 

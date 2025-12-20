@@ -1,0 +1,6 @@
+/* Styles spécifiques pour le dialog de création d'école */
+select:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+

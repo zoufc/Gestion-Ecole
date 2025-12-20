@@ -17,20 +17,25 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     return throwError(() => new Error('Aucune connexion Internet'));
   }
 
-  // Ne pas modifier la requête si c'est une connexion (login)
-  if (req.url.includes('/login')) {
-    return next(req);
-  }
+  // Endpoints publics qui ne nécessitent pas d'authentification
+  const publicEndpoints = ['/login', '/forgot-password', '/reset-password', '/otp-verification'];
+  const isPublicEndpoint = publicEndpoints.some(endpoint => req.url.includes(endpoint));
 
   // Récupérer le token depuis localStorage
   const accessToken = getLocalData('accessToken');
 
-  // Cloner la requête et ajouter le token si disponible
-  const authReq = accessToken
+  // Cloner la requête et ajouter les headers nécessaires
+  let headersToAdd: { [key: string]: string } = {};
+
+  // Ajouter le token si disponible et si ce n'est pas un endpoint public
+  if (accessToken && !isPublicEndpoint) {
+    headersToAdd['x-access-token'] = accessToken;
+  }
+
+  // Cloner la requête et ajouter les headers (seulement si des headers sont à ajouter)
+  const authReq = Object.keys(headersToAdd).length > 0
     ? req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        setHeaders: headersToAdd,
       })
     : req;
 

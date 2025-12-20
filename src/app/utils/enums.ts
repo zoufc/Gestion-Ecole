@@ -31,8 +31,6 @@ export enum UserRoles {
   administrator = 'administrator',
   director = 'director',
   secretary = 'secretary',
-  // Rôles anciens pour compatibilité
-  consultant = 'company_consultant',
   owner = 'company_owner',
 }
 
@@ -67,9 +65,3 @@ export enum RdvStatus {
   rescheduled = 'rescheduled',
 }
 
-export enum ConsultantActionStatus {
-  pending = 'pending',
-  accepted = 'accepted',
-  canceled = 'canceled',
-  rescheduled = 'rescheduled',
-}

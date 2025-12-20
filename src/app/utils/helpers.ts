@@ -34,9 +34,6 @@ export function getTimeFromDateTime(dateTime: string) {
 
 export function getFormatedUserRole(role: string) {
   switch (role) {
-    case UserRoles.consultant:
-      return 'Consultant';
-
     case UserRoles.owner:
       return 'Propriétaire';
     default:

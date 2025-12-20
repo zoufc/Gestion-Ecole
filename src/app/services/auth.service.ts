@@ -50,9 +50,6 @@ export class AuthService {
       case UserRoles.administrator:
       case 'administrator':
         return '/overview';
-      case UserRoles.consultant:
-      case 'company_consultant':
-      case 'consultant':
       case UserRoles.teacher:
       case 'teacher':
         return '/courses';

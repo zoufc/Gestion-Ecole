@@ -60,12 +60,12 @@ export class CreateServiceDialogComponent implements OnInit {
   }
 
   getConsultantsList() {
-    this.userService.getMyConsultantsList().subscribe({
+    this.userService.getTeachersList({ role: 'teacher' }).subscribe({
       next: (response: any) => {
-        console.log('CONS LIST', response);
-        this.consultantsList = response.data;
+        console.log('TEACHERS LIST', response);
+        this.consultantsList = response?.data || response || [];
       },
-      error: (error) => {
+      error: (error: any) => {
         console.log('ERROR', error);
       },
       complete: () => {

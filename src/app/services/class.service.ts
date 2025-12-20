@@ -2,6 +2,13 @@ import { Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+export interface CreateClassDto {
+  name: string;
+  school: string; // MongoDB ObjectId
+  cycle: string; // MongoDB ObjectId
+  teacher: string; // MongoDB ObjectId
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -18,36 +25,46 @@ export class ClassService {
   
   constructor(private apiService: ApiService) {}
 
-  getClassesList(filters: any = {}): Observable<any> {
-    return this.apiService.get('classes/list', { params: filters });
+  getClasses(): Observable<any> {
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.get('classes');
   }
 
-  createClass(classData: any): Observable<any> {
-    return this.apiService.post('classes/create', classData);
+  createClass(classData: CreateClassDto): Observable<any> {
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.post('classes', classData);
   }
 
-  updateClass(classId: number, classData: any): Observable<any> {
+  updateClass(classId: string, classData: Partial<CreateClassDto>): Observable<any> {
+    // L'intercepteur ajoute automatiquement le header x-access-token
     return this.apiService.put(`classes/${classId}/update`, classData);
   }
 
-  deleteClass(classId: number): Observable<any> {
+  deleteClass(classId: string): Observable<any> {
+    // L'intercepteur ajoute automatiquement le header x-access-token
     return this.apiService.delete(`classes/${classId}/delete`);
   }
 
-  getClassById(classId: number): Observable<any> {
-    return this.apiService.get(`classes/${classId}/show`);
+  getClassById(classId: string): Observable<any> {
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.get(`classes/${classId}`);
   }
 
-  getClassStudents(classId: number): Observable<any> {
+  getClassStudents(classId: string): Observable<any> {
     return this.apiService.get(`classes/${classId}/students`);
   }
 
-  getClassSchedule(classId: number): Observable<any> {
+  getClassSchedule(classId: string): Observable<any> {
     return this.apiService.get(`classes/${classId}/schedule`);
   }
 
-  updateClassSchedule(classId: number, schedule: any): Observable<any> {
+  updateClassSchedule(classId: string, schedule: any): Observable<any> {
     return this.apiService.put(`classes/${classId}/schedule`, schedule);
+  }
+
+  getCycles(): Observable<any> {
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.get('cycles');
   }
 
   updatedClassList = signal(false);

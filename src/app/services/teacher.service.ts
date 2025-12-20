@@ -1,8 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
-import { getLocalData } from '../utils/local-storage-service';
-import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
+import { HttpParams, HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -26,9 +25,9 @@ export class TeacherService {
         params = params.set(key, filters[key]);
       }
     }
-    return this.apiService.get('teachers/list', { params });
+    return this.apiService.get('teachers', { params });
   }
-  
+
   getTeachersListForDropdown() {
     return this.apiService.get('teachers/dropdown');
   }
@@ -57,17 +56,11 @@ export class TeacherService {
       })
     );
   }
-  
+
   createTeacher(teacherData: any): Observable<any> {
     console.log('Request Payload:', teacherData);
-
-    const accessToken = getLocalData('accessToken');
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    });
-
-    return this.apiService.post('teachers/create', teacherData, { headers }).pipe(
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.post('teachers', teacherData).pipe(
       catchError((error) => {
         console.error('API Error:', error);
         throw error;
@@ -76,20 +69,13 @@ export class TeacherService {
   }
 
   updateTeacher(teacherId: number, teacherData: any): Observable<any> {
-    const accessToken = getLocalData('accessToken');
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    });
-
-    return this.apiService
-      .put(`teachers/${teacherId}/update`, teacherData, { headers })
-      .pipe(
-        catchError((error) => {
-          console.error('API Error:', error);
-          throw error;
-        })
-      );
+    // L'intercepteur ajoute automatiquement le header x-access-token
+    return this.apiService.put(`teachers/${teacherId}`, teacherData).pipe(
+      catchError((error) => {
+        console.error('API Error:', error);
+        throw error;
+      })
+    );
   }
 
   updateMyInfos(teacherData: any) {
@@ -97,13 +83,12 @@ export class TeacherService {
   }
 
   deleteTeacher(teacherId: number): Observable<any> {
-    return this.apiService.delete(`teachers/${teacherId}/delete`);
+    return this.apiService.delete(`teachers/${teacherId}`);
   }
 
   getTeacherById(teacherId: number): Observable<any> {
-    return this.apiService.get(`teachers/${teacherId}/show`);
+    return this.apiService.get(`teachers/${teacherId}`);
   }
 
   updatedTeacherInfo = signal(false);
 }
-

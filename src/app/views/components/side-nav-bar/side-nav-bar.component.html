@@ -37,6 +37,51 @@
       <!-- Section Gestion -->
       <div class="m-8 mb-2 text-[#707070]">Gestion</div>
 
+      <!-- Écoles -->
+      <li routerLink="schools" routerLinkActive="bg-primary-500  text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="px-6 py-2 mx-2 flex flex-row gap-2 rounded cursor-pointer hover:bg-[#d0cbcb] text-side-bar-color hover:text-white"
+        (click)="toggleSidebar()">
+        <div class="flex flex-row items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3ZM18.82 9L12 12.72L5.18 9L12 5.28L18.82 9ZM17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z"
+              fill="currentColor" />
+          </svg>
+          <div>Écoles</div>
+        </div>
+      </li>
+
+      <!-- Classes -->
+      <li routerLink="classes" routerLinkActive="bg-primary-500  text-white"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="px-6 py-2 mx-2 flex flex-row gap-2 rounded cursor-pointer hover:bg-[#d0cbcb] text-side-bar-color hover:text-white"
+        (click)="toggleSidebar()">
+        <div class="flex flex-row items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 12H7V10H17V12ZM15 16H7V14H15V16ZM17 8H7V6H17V8Z"
+              fill="currentColor" />
+          </svg>
+          <div>Classes</div>
+        </div>
+      </li>
+
+      <!-- Cycles -->
+      <li routerLink="cycles" routerLinkActive="bg-primary-500  text-white"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="px-6 py-2 mx-2 flex flex-row gap-2 rounded cursor-pointer hover:bg-[#d0cbcb] text-side-bar-color hover:text-white"
+        (click)="toggleSidebar()">
+        <div class="flex flex-row items-center gap-2">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z"
+              fill="currentColor" />
+          </svg>
+          <div>Cycles</div>
+        </div>
+      </li>
+
       <!-- Cours -->
       <li routerLink="courses" routerLinkActive="bg-primary-500  text-white"
         [routerLinkActiveOptions]="{ exact: false }"
@@ -78,18 +123,6 @@
         </svg>
       </li>
       <ul *ngIf="dropdowns.management" class="ml-8 space-y-2">
-        <li routerLink="classes" routerLinkActive="text-primary-500 "
-          class="cursor-pointer text-side-bar-color hover:text-primary-500 ml-4" (click)="toggleSidebar()">
-          <div class="flex flex-row gap-2 items-center">
-            <svg width="22" height="10" viewBox="0 0 22 10" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="11" cy="5" r="3.75" stroke="#4B465C" stroke-width="1.5" stroke-linecap="round"
-                stroke-linejoin="round" />
-              <circle cx="11" cy="5" r="3.75" stroke="white" stroke-opacity="0.5" stroke-width="1.5"
-                stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <div>Classes</div>
-          </div>
-        </li>
         <li routerLink="subjects" routerLinkActive="text-primary-500 "
           class="cursor-pointer text-side-bar-color hover:text-primary-500 ml-4" (click)="toggleSidebar()">
           <div class="flex flex-row gap-2 items-center">

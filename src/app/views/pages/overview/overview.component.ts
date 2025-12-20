@@ -184,7 +184,7 @@ export class OverviewComponent implements OnInit {
                           canceledRdvsCount: stats.totalRdvsCanceled || 0,
                           presentRdvsCount: stats.totalRdvsToCome || 0,
                           futureRdvsCount: stats.totalRdvsToCome || 0,
-                          totalConsultants: teachers.length,
+                          totalTeachers: teachers.length,
                           totalVisitors: students.length,
                           totalServices: classes.length,
                           percentageValidateRdvs: percentage,

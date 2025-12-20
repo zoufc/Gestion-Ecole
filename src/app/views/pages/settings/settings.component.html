@@ -13,8 +13,7 @@
           *ngFor="let item of settingsItems"
           class="w-full bg-primary-500 m-2 px-4 py-2 rounded-lg cursor-pointer"
           [ngClass]="{
-            'bg-primary-500  text-white': selectedItem.name == item.name,
-            hidden: item.isForOwner === false && selectedItem.name !== item.name
+            'bg-primary-500  text-white': selectedItem.name == item.name
           }"
           (click)="selectItem(item)"
         >

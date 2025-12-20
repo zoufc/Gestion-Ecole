@@ -17,6 +17,11 @@ import { ResetPasswordComponent } from './views/pages/reset-password/reset-passw
 import { PaymentsComponent } from './views/pages/payments/payments.component';
 import { GradesComponent } from './views/pages/grades/grades.component';
 import { ClassDetailsComponent } from './views/components/class-details/class-details.component';
+import { SchoolsComponent } from './views/pages/schools/schools.component';
+import { ClassesComponent } from './views/pages/classes/classes.component';
+import { TeachersComponent } from './views/pages/teachers/teachers.component';
+import { CyclesComponent } from './views/pages/cycles/cycles.component';
+import { StudentsComponent } from './views/pages/students/students.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent }, // Rediriger vers login par défaut
@@ -69,7 +74,7 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            component: ServicesComponent,
+            component: ClassesComponent,
           },
           {
             path: ':id',
@@ -89,7 +94,7 @@ export const routes: Routes = [
       },
       {
         path: 'students',
-        component: CustomersComponent, // Réutilisé pour les élèves
+        component: StudentsComponent,
       },
       {
         path: 'payments',
@@ -101,7 +106,11 @@ export const routes: Routes = [
       },
       {
         path: 'teachers',
-        component: StaffListComponent, // Réutilisé pour les enseignants
+        component: TeachersComponent,
+      },
+      {
+        path: 'cycles',
+        component: CyclesComponent,
       },
       // Alias pour compatibilité
       {
@@ -113,6 +122,10 @@ export const routes: Routes = [
         path: 'staff-list',
         redirectTo: 'teachers',
         pathMatch: 'full',
+      },
+      {
+        path: 'schools',
+        component: SchoolsComponent,
       },
       {
         path: 'settings',

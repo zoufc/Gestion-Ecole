@@ -214,8 +214,4 @@ export class CoursesListComponent implements OnInit {
     return role == UserRoles.owner;
   }
 
-  isConsultant() {
-    const role = this.authService.getUserRole();
-    return role == UserRoles.consultant;
-  }
 }
