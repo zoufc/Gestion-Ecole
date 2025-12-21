@@ -114,7 +114,7 @@ export interface Payment {
   month: string; // Format: "2024-01" pour janvier 2024
   year: number;
   status: string; // paid, pending, overdue, partial
-  payment_method?: string; // cash, bank_transfer, mobile_money, check
+  payment_method?: string; // CASH, WAVE, OM, BANK_TRANSFER, CHECK, OTHER
   reference?: string;
   notes?: string;
   created_at?: string;

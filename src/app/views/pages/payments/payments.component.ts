@@ -3,11 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
-import { MockDataService } from '../../../services/mock-data.service';
+import { PaymentService, PaymentMethod, PaymentStatus } from '../../../services/payment.service';
 import { Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { CreatePaymentDialogComponent } from '../../components/create-payment-dialog/create-payment-dialog.component';
 
 @Component({
   selector: 'app-payments',
@@ -21,7 +22,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     MatDialogModule,
     MatSelectModule,
     DatePipe,
-    RouterLink,
   ],
   templateUrl: './payments.component.html',
   styleUrls: ['./payments.component.css'],
@@ -41,33 +41,32 @@ export class PaymentsComponent implements OnInit {
   // Options pour les filtres
   statusOptions = [
     { value: 'all', label: 'Tous les statuts' },
-    { value: 'paid', label: 'Payés' },
-    { value: 'pending', label: 'En attente' },
-    { value: 'overdue', label: 'En retard' },
+    { value: PaymentStatus.PENDING, label: 'En attente' },
+    { value: PaymentStatus.PAID, label: 'Payé' },
+    { value: PaymentStatus.CANCELED, label: 'Annulé' },
   ];
 
-  months = [
-    { value: '', label: 'Tous les mois' },
-    { value: '2024-01', label: 'Janvier 2024' },
-    { value: '2024-02', label: 'Février 2024' },
-    { value: '2024-03', label: 'Mars 2024' },
-    { value: '2024-04', label: 'Avril 2024' },
-    { value: '2024-05', label: 'Mai 2024' },
-    { value: '2024-06', label: 'Juin 2024' },
-    { value: '2024-07', label: 'Juillet 2024' },
-    { value: '2024-08', label: 'Août 2024' },
-    { value: '2024-09', label: 'Septembre 2024' },
-    { value: '2024-10', label: 'Octobre 2024' },
-    { value: '2024-11', label: 'Novembre 2024' },
-    { value: '2024-12', label: 'Décembre 2024' },
-  ];
-
-  constructor(
-    private mockData: MockDataService,
-    private router: Router
-  ) {}
+  months: { value: string; label: string }[] = [];
 
   ngOnInit(): void {
+    // Générer les mois dynamiquement pour l'année actuelle et l'année précédente
+    const currentYear = new Date().getFullYear();
+    const monthNames = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    
+    this.months = [{ value: '', label: 'Tous les mois' }];
+    
+    // Ajouter les mois des 2 dernières années
+    for (let year = currentYear; year >= currentYear - 1; year--) {
+      for (let month = 1; month <= 12; month++) {
+        const monthValue = `${year}-${String(month).padStart(2, '0')}`;
+        const monthLabel = `${monthNames[month - 1]} ${year}`;
+        this.months.push({ value: monthValue, label: monthLabel });
+      }
+    }
+
     this.getPaymentsList(this.actualPage, this.actualLimit);
 
     this.searchControl.valueChanges
@@ -77,6 +76,12 @@ export class PaymentsComponent implements OnInit {
         this.getPaymentsList(this.actualPage, this.actualLimit);
       });
   }
+
+  constructor(
+    private paymentService: PaymentService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
   getPaymentsList(page: number, limit: number): void {
     const params: any = {
@@ -88,11 +93,23 @@ export class PaymentsComponent implements OnInit {
       ...(this.selectedYear ? { year: this.selectedYear } : {}),
     };
 
-    this.mockData.getPayments(params).subscribe({
+    this.paymentService.getPayments(params).subscribe({
       next: (response: any) => {
-        this.paymentsList = response.data;
-        this.totalPages = response.meta.totalPages;
-        this.total = response.meta.total;
+        const data = response?.data || response || [];
+        const meta = response?.meta || {};
+        
+        // Si c'est un tableau simple, gérer la pagination côté client
+        if (Array.isArray(data)) {
+          const startIndex = (page - 1) * limit;
+          const endIndex = startIndex + limit;
+          this.paymentsList = data.slice(startIndex, endIndex);
+          this.total = data.length;
+          this.totalPages = Math.ceil(data.length / limit);
+        } else {
+          this.paymentsList = data;
+          this.totalPages = meta.totalPages || 1;
+          this.total = meta.total || 0;
+        }
       },
       error: (error) => {
         console.error('Erreur lors du chargement des paiements:', error);
@@ -118,30 +135,52 @@ export class PaymentsComponent implements OnInit {
   }
 
   getStatusClass(status: string): string {
-    switch (status) {
+    if (!status) return 'bg-gray-100 text-gray-800';
+    
+    // Normaliser le statut (gérer les différents formats)
+    const normalizedStatus = status.toUpperCase();
+    
+    switch (normalizedStatus) {
+      case PaymentStatus.PAID:
+      case 'PAID':
       case 'paid':
         return 'bg-green-100 text-green-800';
+      case PaymentStatus.PENDING:
+      case 'PENDING':
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
-      case 'overdue':
+      case PaymentStatus.CANCELED:
+      case 'CANCELED':
+      case 'CANCELLED':
+      case 'canceled':
+      case 'cancelled':
         return 'bg-red-100 text-red-800';
-      case 'partial':
-        return 'bg-blue-100 text-blue-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   }
 
   getStatusLabel(status: string): string {
-    switch (status) {
+    if (!status) return '-';
+    
+    // Normaliser le statut (gérer les différents formats)
+    const normalizedStatus = status.toUpperCase();
+    
+    switch (normalizedStatus) {
+      case PaymentStatus.PAID:
+      case 'PAID':
       case 'paid':
         return 'Payé';
+      case PaymentStatus.PENDING:
+      case 'PENDING':
       case 'pending':
         return 'En attente';
-      case 'overdue':
-        return 'En retard';
-      case 'partial':
-        return 'Partiel';
+      case PaymentStatus.CANCELED:
+      case 'CANCELED':
+      case 'CANCELLED':
+      case 'canceled':
+      case 'cancelled':
+        return 'Annulé';
       default:
         return status;
     }
@@ -157,7 +196,20 @@ export class PaymentsComponent implements OnInit {
 
   getMonthLabel(month: string): string {
     if (!month) return '-';
-    const [year, monthNum] = month.split('-');
+    // Le format peut être "YYYY-MM" ou "MM-YYYY"
+    let year: string, monthNum: string;
+    if (month.includes('-')) {
+      const parts = month.split('-');
+      // Si le premier élément est >= 2000, c'est probablement l'année (format YYYY-MM)
+      if (parseInt(parts[0]) >= 2000) {
+        [year, monthNum] = parts;
+      } else {
+        // Sinon, c'est probablement MM-YYYY
+        [monthNum, year] = parts;
+      }
+    } else {
+      return month;
+    }
     const monthNames = [
       'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
       'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
@@ -165,8 +217,115 @@ export class PaymentsComponent implements OnInit {
     return `${monthNames[parseInt(monthNum) - 1]} ${year}`;
   }
 
-  goToStudentDetail(studentId: number): void {
-    this.router.navigate(['/detailUser', studentId]);
+  getStudentName(payment: any): string {
+    if (!payment) return '-';
+    
+    // Nouvelle structure: payment.student.firstName et payment.student.lastName
+    if (payment.student && payment.student.firstName) {
+      const firstName = payment.student.firstName || '';
+      const lastName = payment.student.lastName || '';
+      return `${firstName} ${lastName}`.trim() || 'Sans nom';
+    }
+    
+    // Ancienne structure (pour compatibilité): payment.student_name
+    if (payment.student_name) {
+      return payment.student_name;
+    }
+    
+    return '-';
+  }
+
+  getClassName(payment: any): string {
+    if (!payment) return '-';
+    
+    // Nouvelle structure: payment.student.class.name
+    if (payment.student && payment.student.class && payment.student.class.name) {
+      return payment.student.class.name;
+    }
+    
+    // Ancienne structure (pour compatibilité): payment.class_name
+    if (payment.class_name) {
+      return payment.class_name;
+    }
+    
+    return '-';
+  }
+
+  getStudentId(payment: any): string | number | null {
+    if (!payment) return null;
+    
+    // Nouvelle structure: payment.student._id
+    if (payment.student && payment.student._id) {
+      return payment.student._id;
+    }
+    
+    // Ancienne structure (pour compatibilité): payment.student_id
+    if (payment.student_id) {
+      return payment.student_id;
+    }
+    
+    return null;
+  }
+
+  goToPaymentDetail(paymentId: string): void {
+    this.router.navigate(['/payments', paymentId]);
+  }
+
+  getPaymentMethodLabel(method: string): string {
+    if (!method) return '-';
+    
+    // Gérer les nouvelles valeurs de l'enum
+    switch (method) {
+      case PaymentMethod.CASH:
+      case 'CASH':
+      case 'cash':
+        return 'Espèces';
+      case PaymentMethod.WAVE:
+      case 'WAVE':
+      case 'wave':
+        return 'Wave';
+      case PaymentMethod.OM:
+      case 'OM':
+      case 'om':
+        return 'Orange Money';
+      case PaymentMethod.BANK_TRANSFER:
+      case 'BANK_TRANSFER':
+      case 'bank_transfer':
+        return 'Virement bancaire';
+      case PaymentMethod.CHECK:
+      case 'CHECK':
+      case 'check':
+        return 'Chèque';
+      case PaymentMethod.OTHER:
+      case 'OTHER':
+      case 'other':
+        return 'Autre';
+      default:
+        return method;
+    }
+  }
+
+  goToStudentDetail(studentId: string | number | null): void {
+    if (!studentId) return;
+    this.router.navigate(['/students', studentId]);
+  }
+
+  openCreatePaymentDialog(payment?: any): void {
+    const dialogRef = this.dialog.open(CreatePaymentDialogComponent, {
+      width: '100%',
+      maxWidth: '700px',
+      position: { right: '0' },
+      panelClass: 'custom-dialog-right',
+      data: payment ? { payment } : {},
+    });
+
+    dialogRef.componentInstance.paymentCreated.subscribe(() => {
+      this.getPaymentsList(this.actualPage, this.actualLimit);
+    });
+  }
+
+  editPayment(payment: any): void {
+    this.openCreatePaymentDialog(payment);
   }
 }
 

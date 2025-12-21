@@ -98,6 +98,18 @@ body {
   max-height: 100vh !important;
 }
 
+/* Responsivité pour mobile : dialog prend toute la largeur */
+@media (max-width: 768px) {
+  .custom-dialog-right .mat-dialog-container {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  
+  .custom-dialog-right .mat-dialog-container > * {
+    width: 100% !important;
+  }
+}
+
 .custom-select {
   appearance: none;
   -webkit-appearance: none;

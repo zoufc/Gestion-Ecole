@@ -20,11 +20,17 @@ export class UserService {
 
   getTeachersList(filters: any = {}): Observable<any> {
     let params = new HttpParams();
+
+    // Toujours ajouter le rôle Teacher en premier
+    params = params.set('role', 'Teacher');
+
+    // Ajouter les autres filtres
     for (const key in filters) {
-      if (filters[key]) {
+      if (filters[key] && key !== 'role') {
         params = params.set(key, filters[key]);
       }
     }
+
     return this.apiService.get('users', { params });
   }
 
@@ -85,7 +91,7 @@ export class UserService {
     return this.apiService.delete(`users/${userId}/delete`);
   }
 
-  getUserById(userId: number): Observable<any> {
+  getUserById(userId: string): Observable<any> {
     return this.apiService.get(`users/${userId}/show `);
   }
 

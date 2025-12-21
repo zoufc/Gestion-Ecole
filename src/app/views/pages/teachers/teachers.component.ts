@@ -26,9 +26,15 @@ import { Router } from '@angular/router';
 })
 export class TeachersComponent implements OnInit {
   teachersList = signal<any[]>([]);
+  filteredTeachersList = signal<any[]>([]);
   isLoading = false;
   search: string = '';
   searchControl = new FormControl('');
+  
+  // Pagination
+  page: number = 1;
+  limit: number = 10;
+  totalPages: number = 1;
 
   constructor(
     private userService: UserService,
@@ -45,7 +51,7 @@ export class TeachersComponent implements OnInit {
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.search = value || '';
-        this.loadTeachers();
+        this.onSearchChange();
       });
   }
 
@@ -78,6 +84,7 @@ export class TeachersComponent implements OnInit {
         }
 
         this.teachersList.set(teachersFiltered);
+        this.updatePagination(teachersFiltered);
         this.isLoading = false;
       },
       error: (error) => {
@@ -139,6 +146,28 @@ export class TeachersComponent implements OnInit {
     const firstName = teacher.firstname || teacher.first_name || '';
     const lastName = teacher.lastname || teacher.last_name || '';
     return `${firstName} ${lastName}`.trim() || 'Sans nom';
+  }
+
+  updatePagination(teachers: any[]): void {
+    this.totalPages = Math.ceil(teachers.length / this.limit);
+    if (this.totalPages === 0) this.totalPages = 1;
+    if (this.page > this.totalPages) this.page = 1;
+    
+    const startIndex = (this.page - 1) * this.limit;
+    const endIndex = startIndex + this.limit;
+    this.filteredTeachersList.set(teachers.slice(startIndex, endIndex));
+  }
+
+  changePage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+      this.page = pageNumber;
+      this.updatePagination(this.teachersList());
+    }
+  }
+
+  onSearchChange(): void {
+    this.page = 1;
+    this.loadTeachers();
   }
 }
 

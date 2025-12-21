@@ -26,9 +26,15 @@ import { Router } from '@angular/router';
 })
 export class StudentsComponent implements OnInit {
   studentsList = signal<any[]>([]);
+  filteredStudentsList = signal<any[]>([]);
   isLoading = false;
   search: string = '';
   searchControl = new FormControl('');
+  
+  // Pagination
+  page: number = 1;
+  limit: number = 10;
+  totalPages: number = 1;
 
   constructor(
     private studentService: StudentService,
@@ -45,7 +51,7 @@ export class StudentsComponent implements OnInit {
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.search = value || '';
-        this.loadStudents();
+        this.onSearchChange();
       });
   }
 
@@ -70,6 +76,7 @@ export class StudentsComponent implements OnInit {
         }
 
         this.studentsList.set(filteredStudents);
+        this.updatePagination(filteredStudents);
         this.isLoading = false;
       },
       error: (error) => {
@@ -124,7 +131,7 @@ export class StudentsComponent implements OnInit {
   }
 
   goToStudentDetail(studentId: string): void {
-    this.router.navigate(['/detailUser', studentId]);
+    this.router.navigate(['/students', studentId]);
   }
 
   getStudentName(student: any): string {
@@ -135,6 +142,28 @@ export class StudentsComponent implements OnInit {
 
   getClassName(student: any): string {
     return student.class?.name || student.class_name || 'Non assigné';
+  }
+
+  updatePagination(students: any[]): void {
+    this.totalPages = Math.ceil(students.length / this.limit);
+    if (this.totalPages === 0) this.totalPages = 1;
+    if (this.page > this.totalPages) this.page = 1;
+    
+    const startIndex = (this.page - 1) * this.limit;
+    const endIndex = startIndex + this.limit;
+    this.filteredStudentsList.set(students.slice(startIndex, endIndex));
+  }
+
+  changePage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+      this.page = pageNumber;
+      this.updatePagination(this.studentsList());
+    }
+  }
+
+  onSearchChange(): void {
+    this.page = 1;
+    this.loadStudents();
   }
 }
 

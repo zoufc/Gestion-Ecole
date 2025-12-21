@@ -1,12 +1,25 @@
-import { Component, OnInit, signal, computed, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  computed,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
+import { StudentService } from '../../../services/student.service';
 import { NgClass, NgIf, NgFor, NgForOf, CommonModule } from '@angular/common';
 import { ConfirmDialogComponent } from '../confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateUserDialogComponent } from '../create-user-dialog/create-user-dialog.component';
 // import { Validators } from 'ngx-editor';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { MockDataService } from '../../../services/mock-data.service';
 
@@ -14,12 +27,21 @@ import { MockDataService } from '../../../services/mock-data.service';
   selector: 'app-detail-user',
   templateUrl: './detail-user.component.html',
   styleUrls: ['./detail-user.component.css'],
-  imports: [NgIf, NgClass, RouterLink, NgFor, NgForOf,CommonModule, ReactiveFormsModule, NgxSpinnerModule],
+  imports: [
+    NgIf,
+    NgClass,
+    RouterLink,
+    NgFor,
+    NgForOf,
+    CommonModule,
+    ReactiveFormsModule,
+    NgxSpinnerModule,
+  ],
 })
 export class DetailUserComponent implements OnInit {
   userId: string | null = null;
   user = signal<any>(null);
-  
+
   status: boolean = false;
   actualPage: number = 1;
   data: any;
@@ -68,12 +90,12 @@ export class DetailUserComponent implements OnInit {
   //       user: user,
   //       isEditing: true,
   //       currentUserId: this.user.id,
-        
+
   //     },
   //   });
   //   console.log('current',this.currentUserId);
   //   // console.log();
-    
+
   //   this.isDropdownOpen = false;
 
   //   dialogRef.componentInstance.userUpdated.subscribe(() => {
@@ -81,34 +103,37 @@ export class DetailUserComponent implements OnInit {
   //   });
   // }
 
-
   openEditUserDialog(user: any): void {
     if (!user) {
       console.error('User data is not available');
       return;
     }
-  
+
     const dialogRef = this.dialog.open(CreateUserDialogComponent, {
       panelClass: 'custom-dialog',
       data: {
         user: user.data,
-        
+
         isEditing: true,
-        currentUserId: user.data.id, 
+        currentUserId: user.data.id,
       },
     });
-    console.log('user.user.data',user.data.id);
-  console.log(this.currentUserId);
-  
+    console.log('user.user.data', user.data.id);
+    console.log(this.currentUserId);
+
     dialogRef.componentInstance.userUpdated.subscribe(() => {
       this.loadUserDetails(user.data.id);
-      console.log( 'this.loadUserDetails(user.id)',this.loadUserDetails(user.data.id) );
-      this.isDropdownOpen=false;
+      console.log(
+        'this.loadUserDetails(user.id)',
+        this.loadUserDetails(user.data.id)
+      );
+      this.isDropdownOpen = false;
     });
   }
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
+    private studentService: StudentService,
     private dialog: MatDialog,
     private fb: FormBuilder,
     private mockData: MockDataService
@@ -133,7 +158,7 @@ export class DetailUserComponent implements OnInit {
   //     this.isEditing = this.data.isEditing || false;
   //     this.currentUserId = this.data.currentUserId || null;
   //   }
-    
+
   // }
 
   // loadUserDetails(userId: number): void {
@@ -148,32 +173,47 @@ export class DetailUserComponent implements OnInit {
   //   );
   // }
 
-
-
   ngOnInit(): void {
     this.userId = this.route.snapshot.paramMap.get('id');
     if (this.userId) {
-      this.loadUserDetails(+this.userId);
+      this.loadUserDetails(this.userId);
     }
   }
-  
-  loadUserDetails(userId: number): void {
-    this.userService.getUserById(userId).subscribe(
-      (data) => {
-        this.user.set(data);
-        console.log('User details:', this.user);
+
+  loadUserDetails(userId: string): void {
+    // Essayer d'abord de charger comme étudiant
+    this.studentService.getStudentById(userId).subscribe({
+      next: (data: any) => {
+        // Normaliser la structure de réponse pour qu'elle soit compatible avec le template
+        const studentData = data?.data || data;
+        this.user.set({ data: studentData });
+        console.log('Student details:', this.user);
         // Charger les statistiques de paiement pour cet élève
         this.loadPaymentStatistics(userId);
         // Charger les statistiques de notes pour cet élève
         this.loadGradeStatistics(userId);
       },
-      (error) => {
-        console.error('Error fetching user details:', error);
-      }
-    );
+      error: (studentError: any) => {
+        // Si ce n'est pas un étudiant, essayer comme utilisateur
+        console.log('Not a student, trying as user...', studentError);
+        this.userService.getUserById(userId).subscribe({
+          next: (data: any) => {
+            this.user.set(data);
+            console.log('User details:', this.user);
+            // Charger les statistiques de paiement
+            this.loadPaymentStatistics(userId);
+            // Charger les statistiques de notes
+            this.loadGradeStatistics(userId);
+          },
+          error: (userError: any) => {
+            console.error('Error fetching user/student details:', userError);
+          },
+        });
+      },
+    });
   }
 
-  loadPaymentStatistics(studentId: number): void {
+  loadPaymentStatistics(studentId: string): void {
     this.isLoadingPaymentStats = true;
     this.mockData.getPaymentStatistics(studentId).subscribe({
       next: (response: any) => {
@@ -187,7 +227,7 @@ export class DetailUserComponent implements OnInit {
     });
   }
 
-  loadGradeStatistics(studentId: number): void {
+  loadGradeStatistics(studentId: string): void {
     this.isLoadingGradeStats = true;
     this.mockData.getGradeStatistics(studentId).subscribe({
       next: (response: any) => {
@@ -213,8 +253,18 @@ export class DetailUserComponent implements OnInit {
     if (!month) return '-';
     const [year, monthNum] = month.split('-');
     const monthNames = [
-      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+      'Janvier',
+      'Février',
+      'Mars',
+      'Avril',
+      'Mai',
+      'Juin',
+      'Juillet',
+      'Août',
+      'Septembre',
+      'Octobre',
+      'Novembre',
+      'Décembre',
     ];
     return `${monthNames[parseInt(monthNum) - 1]} ${year}`;
   }
@@ -260,7 +310,7 @@ export class DetailUserComponent implements OnInit {
     return 'text-red-600';
   }
 
-  toggleUserStatus(userId: number): void {
+  toggleUserStatus(userId: string): void {
     if (this.user) {
       this.user().data.status = !this.user().data.status;
       this.userService.getUserById(userId).subscribe(

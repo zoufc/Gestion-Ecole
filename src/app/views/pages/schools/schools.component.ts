@@ -25,9 +25,15 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class SchoolsComponent implements OnInit {
   schoolsList = signal<any[]>([]);
+  filteredSchoolsList = signal<any[]>([]);
   isLoading = false;
   search: string = '';
   searchControl = new FormControl('');
+
+  // Pagination
+  page: number = 1;
+  limit: number = 10;
+  totalPages: number = 1;
 
   constructor(
     private schoolService: SchoolService,
@@ -43,7 +49,7 @@ export class SchoolsComponent implements OnInit {
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.search = value || '';
-        this.loadSchools();
+        this.onSearchChange();
       });
   }
 
@@ -66,6 +72,7 @@ export class SchoolsComponent implements OnInit {
         }
 
         this.schoolsList.set(filteredSchools);
+        this.updatePagination(filteredSchools);
         this.isLoading = false;
       },
       error: (error) => {
@@ -126,5 +133,27 @@ export class SchoolsComponent implements OnInit {
       }`.trim();
     }
     return 'Non assigné';
+  }
+
+  updatePagination(schools: any[]): void {
+    this.totalPages = Math.ceil(schools.length / this.limit);
+    if (this.totalPages === 0) this.totalPages = 1;
+    if (this.page > this.totalPages) this.page = 1;
+
+    const startIndex = (this.page - 1) * this.limit;
+    const endIndex = startIndex + this.limit;
+    this.filteredSchoolsList.set(schools.slice(startIndex, endIndex));
+  }
+
+  changePage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+      this.page = pageNumber;
+      this.updatePagination(this.schoolsList());
+    }
+  }
+
+  onSearchChange(): void {
+    this.page = 1;
+    this.loadSchools();
   }
 }

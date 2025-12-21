@@ -1,8 +1,19 @@
 <div class="flex flex-col">
-  <p class="text-xl font-bold">
-    <span class="text-[#707070]">Accueil / Gestion /</span>
-    <span class="text-primary-text">Paiements ({{ total }})</span>
-  </p>
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+    <p class="text-xl font-bold">
+      <span class="text-[#707070]">Accueil / Gestion /</span>
+      <span class="text-primary-text">Paiements ({{ total }})</span>
+    </p>
+    <button
+      (click)="openCreatePaymentDialog()"
+      class="rounded px-4 py-2 bg-primary-500 text-white border-primary-500 border hover:bg-primary-600 cursor-pointer transition-colors flex items-center gap-2"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
+      </svg>
+      Ajouter un paiement
+    </button>
+  </div>
 
   <div class="flex flex-col min-h-100 bg-card text-primary-text shadow-lg rounded-lg p-4 gap-4 mt-8">
     <p class="font-bold mt-4 text-primary-500">Filtrer</p>
@@ -60,93 +71,91 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="bg-card text-primary-text shadow-lg rounded-lg overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full border-collapse">
           <thead>
-            <tr>
-              <th class="p-2 border-b text-left">Élève</th>
-              <th class="p-2 border-b text-left">Classe</th>
-              <th class="p-2 border-b text-left">Mois</th>
-              <th class="p-2 border-b text-left">Montant</th>
-              <th class="p-2 border-b text-left">Date de paiement</th>
-              <th class="p-2 border-b text-left">Échéance</th>
-              <th class="p-2 border-b text-left">Méthode</th>
-              <th class="p-2 border-b text-left">Statut</th>
-              <th class="p-2 border-b text-left">Référence</th>
-              <th class="p-2 border-b text-left">Actions</th>
+            <tr class="bg-card text-primary-text border-b border-gray-300">
+              <th class="p-4 text-left font-semibold">Élève</th>
+              <th class="p-4 text-left font-semibold">Classe</th>
+              <th class="p-4 text-left font-semibold">Mois</th>
+              <th class="p-4 text-left font-semibold">Montant</th>
+              <th class="p-4 text-left font-semibold">Date de paiement</th>
+              <th class="p-4 text-left font-semibold">Méthode</th>
+              <th class="p-4 text-left font-semibold">Statut</th>
+              <th class="p-4 text-left font-semibold">Référence</th>
+              <th class="p-4 text-left font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let payment of paymentsList" class="border-b border-gray-300">
-              <td class="p-2">
-                <div class="flex flex-row gap-2 items-center">
-                  <svg width="30" height="30" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_50_5632)">
-                      <rect x="-0.1604" y="0.0273438" width="38" height="38" fill="#FC2828" fill-opacity="0.18" />
-                      <path
-                        d="M13.4942 24.9195C13.1242 24.9195 12.7667 24.8795 12.4217 24.7995C12.0767 24.7195 11.8392 24.657 11.7092 24.612L11.7917 23.097C11.9467 23.147 12.1217 23.2095 12.3167 23.2845C12.5167 23.3545 12.7592 23.3895 13.0442 23.3895C13.5342 23.3895 13.8692 23.2545 14.0492 22.9845C14.2292 22.7145 14.3192 22.267 14.3192 21.642V13.9245H15.9317V22.0845C15.9317 22.6945 15.8617 23.212 15.7217 23.637C15.5867 24.057 15.3442 24.377 14.9942 24.597C14.6442 24.812 14.1442 24.9195 13.4942 24.9195ZM18.3933 24.7695V13.9245H20.0658V19.362L24.6783 13.9245H26.5683L23.0283 18.1695L26.8983 24.7695H25.1133L21.8658 19.3395L20.0658 21.432V24.7695H18.3933Z"
-                        fill="#FC2828"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_50_5632">
-                        <rect width="38" height="38" rx="19" fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                  <span class="cursor-pointer hover:text-primary-500" (click)="goToStudentDetail(payment.student_id)">
-                    {{ payment.student_name }}
-                  </span>
-                </div>
+            <tr *ngFor="let payment of paymentsList" class="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+              <td class="p-4">
+                <span class="cursor-pointer hover:text-primary-500 font-medium" (click)="goToStudentDetail(getStudentId(payment))">
+                  {{ getStudentName(payment) }}
+                </span>
               </td>
-              <td class="p-2">{{ payment.class_name || '-' }}</td>
-              <td class="p-2">{{ getMonthLabel(payment.month) }}</td>
-              <td class="p-2 font-semibold">{{ formatAmount(payment.amount) }}</td>
-              <td class="p-2">
-                <span *ngIf="payment.payment_date; else noDate">
-                  {{ payment.payment_date | date:'dd/MM/yyyy' }}
+              <td class="p-4">{{ getClassName(payment) }}</td>
+              <td class="p-4">{{ getMonthLabel(payment.month) }}</td>
+              <td class="p-4 font-semibold">{{ formatAmount(payment.amount) }}</td>
+              <td class="p-4">
+                <span *ngIf="payment.paymentDate || payment.payment_date; else noDate">
+                  {{ (payment.paymentDate || payment.payment_date) | date:'dd/MM/yyyy' }}
                 </span>
                 <ng-template #noDate>-</ng-template>
               </td>
-              <td class="p-2">{{ payment.due_date | date:'dd/MM/yyyy' }}</td>
-              <td class="p-2">
-                <span *ngIf="payment.payment_method; else noMethod">
-                  {{ payment.payment_method === 'bank_transfer' ? 'Virement' : 
-                     payment.payment_method === 'mobile_money' ? 'Mobile Money' : 
-                     payment.payment_method === 'cash' ? 'Espèces' : 
-                     payment.payment_method === 'check' ? 'Chèque' : payment.payment_method }}
+              <td class="p-4">
+                <span *ngIf="payment.payment_method || payment.method; else noMethod">
+                  {{ getPaymentMethodLabel(payment.payment_method || payment.method) }}
                 </span>
                 <ng-template #noMethod>-</ng-template>
               </td>
-              <td class="p-2">
+              <td class="p-4">
                 <span [ngClass]="getStatusClass(payment.status)" class="px-2 py-1 rounded-full text-xs font-semibold">
                   {{ getStatusLabel(payment.status) }}
                 </span>
               </td>
-              <td class="p-2">
+              <td class="p-4">
                 <span *ngIf="payment.reference; else noRef">{{ payment.reference }}</span>
                 <ng-template #noRef>-</ng-template>
               </td>
-              <td class="p-2">
+              <td class="p-4">
                 <div class="flex flex-row gap-2">
-                  <a
-                    [routerLink]="['/detailUser', payment.student_id]"
-                    class="cursor-pointer text-primary-500 hover:underline"
-                    title="Voir les détails de l'élève"
+                  <button
+                    (click)="goToPaymentDetail(payment._id || payment.id)"
+                    class="cursor-pointer text-primary-500 hover:text-primary-600 p-1"
+                    title="Voir les détails du paiement"
                   >
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M11 4.58398C15.5924 4.58398 19.3334 7.63365 19.3334 11.458C19.3334 15.2823 15.5924 18.332 11 18.332C6.40759 18.332 2.66659 15.2823 2.66659 11.458C2.66659 7.63365 6.40759 4.58398 11 4.58398ZM11 6.41602C7.42743 6.41602 4.54159 8.66732 4.54159 11.458C4.54159 14.2487 7.42743 16.5 11 16.5C14.5726 16.5 17.4584 14.2487 17.4584 11.458C17.4584 8.66732 14.5726 6.41602 11 6.41602ZM11 8.24935C12.5188 8.24935 13.75 9.48056 13.75 10.9993C13.75 12.5181 12.5188 13.7493 11 13.7493C9.48122 13.7493 8.25002 12.5181 8.25002 10.9993C8.25002 9.48056 9.48122 8.24935 11 8.24935Z"
-                        fill="#4B465C"
+                        fill="currentColor"
                       />
                     </svg>
-                  </a>
+                  </button>
+                  <button
+                    (click)="editPayment(payment)"
+                    class="cursor-pointer text-green-500 hover:text-green-600 p-1"
+                    title="Modifier le paiement"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13.586 3.586C13.7705 3.39464 13.9912 3.2426 14.2352 3.13781C14.4792 3.03302 14.7416 2.97754 15.0072 2.97468C15.2728 2.97181 15.5367 3.02162 15.7829 3.12119C16.0292 3.22076 16.2529 3.36818 16.4408 3.55502C16.6286 3.74186 16.7769 3.9645 16.8773 4.20964C16.9778 4.45479 17.0284 4.71761 17.0262 4.9822C17.0241 5.24679 16.9693 5.50818 16.865 5.7512C16.7607 5.99422 16.609 6.21396 16.418 6.397L15.621 7.194L12.789 4.362L13.586 3.586ZM11.379 5.793L3 14.172V17H5.828L14.207 8.621L11.379 5.793Z" fill="currentColor"/>
+                    </svg>
+                  </button>
+                  <button
+                    (click)="goToStudentDetail(getStudentId(payment))"
+                    class="cursor-pointer text-blue-500 hover:text-blue-600 p-1"
+                    title="Voir les détails de l'élève"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 9C11.6569 9 13 7.65685 13 6C13 4.34315 11.6569 3 10 3C8.34315 3 7 4.34315 7 6C7 7.65685 8.34315 9 10 9Z" fill="currentColor"/>
+                      <path d="M10 11C7.23858 11 5 13.2386 5 16V17H15V16C15 13.2386 12.7614 11 10 11Z" fill="currentColor"/>
+                    </svg>
+                  </button>
                 </div>
               </td>
             </tr>
             <tr *ngIf="paymentsList.length === 0">
-              <td colspan="10" class="p-8 text-center text-gray-500">Aucun paiement trouvé</td>
+              <td colspan="9" class="p-8 text-center text-gray-500">Aucun paiement trouvé</td>
             </tr>
           </tbody>
         </table>

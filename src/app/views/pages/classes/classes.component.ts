@@ -26,9 +26,15 @@ import { Router } from '@angular/router';
 })
 export class ClassesComponent implements OnInit {
   classesList = signal<any[]>([]);
+  filteredClassesList = signal<any[]>([]);
   isLoading = false;
   search: string = '';
   searchControl = new FormControl('');
+
+  // Pagination
+  page: number = 1;
+  limit: number = 10;
+  totalPages: number = 1;
 
   constructor(
     private classService: ClassService,
@@ -45,7 +51,7 @@ export class ClassesComponent implements OnInit {
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.search = value || '';
-        this.loadClasses();
+        this.onSearchChange();
       });
   }
 
@@ -71,6 +77,7 @@ export class ClassesComponent implements OnInit {
         }
 
         this.classesList.set(filteredClasses);
+        this.updatePagination(filteredClasses);
         this.isLoading = false;
       },
       error: (error) => {
@@ -156,5 +163,27 @@ export class ClassesComponent implements OnInit {
       return classItem.teacher_name;
     }
     return 'Non assigné';
+  }
+
+  updatePagination(classes: any[]): void {
+    this.totalPages = Math.ceil(classes.length / this.limit);
+    if (this.totalPages === 0) this.totalPages = 1;
+    if (this.page > this.totalPages) this.page = 1;
+
+    const startIndex = (this.page - 1) * this.limit;
+    const endIndex = startIndex + this.limit;
+    this.filteredClassesList.set(classes.slice(startIndex, endIndex));
+  }
+
+  changePage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+      this.page = pageNumber;
+      this.updatePagination(this.classesList());
+    }
+  }
+
+  onSearchChange(): void {
+    this.page = 1;
+    this.loadClasses();
   }
 }

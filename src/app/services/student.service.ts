@@ -53,7 +53,7 @@ export class StudentService {
     return this.apiService.delete(`students/${studentId}`);
   }
 
-  getStudentById(studentId: number): Observable<any> {
+  getStudentById(studentId: string): Observable<any> {
     return this.apiService.get(`students/${studentId}`);
   }
 }

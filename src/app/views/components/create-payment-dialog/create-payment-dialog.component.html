@@ -1,0 +1,160 @@
+<div
+  class="fixed top-0 right-0 h-screen w-full md:w-2/3 lg:w-1/2 bg-card text-primary-text shadow-lg transform transition-transform translate-x-0 overflow-y-auto"
+>
+  <div class="flex justify-between items-center p-4 border-b border-[#707070] sticky top-0 bg-card z-10">
+    <h2 class="text-lg font-bold">{{ isEditing ? 'Modifier un paiement' : 'Ajouter un paiement' }}</h2>
+    <button
+      (click)="close()"
+      class="text-gray-500 hover:text-gray-700 cursor-pointer"
+    >
+      <div class="px-4 py-2 rounded border-1">✖</div>
+    </button>
+  </div>
+  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" class="flex flex-col p-6 gap-4 w-full">
+    <!-- Étudiant -->
+    <div>
+      <p class="text-sm mb-1">Élève <span class="text-red-500">*</span></p>
+      <select
+        formControlName="student"
+        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+        [disabled]="data?.studentId"
+      >
+        <option value="">Sélectionner un élève</option>
+        <option
+          *ngFor="let student of studentsList"
+          [value]="student._id || student.id"
+        >
+          {{ getStudentName(student) }} -
+          {{ student.student_number || student.studentNumber || '' }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          paymentForm.get('student')?.invalid &&
+          paymentForm.get('student')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Veuillez sélectionner un élève
+      </div>
+    </div>
+
+    <!-- Montant -->
+    <div>
+      <p class="text-sm mb-1">Montant (FCFA) <span class="text-red-500">*</span></p>
+      <input
+        type="number"
+        formControlName="amount"
+        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+        placeholder="Ex: 50000"
+        min="0"
+        step="0.01"
+      />
+      <div
+        *ngIf="
+          paymentForm.get('amount')?.invalid &&
+          paymentForm.get('amount')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Veuillez entrer un montant valide
+      </div>
+    </div>
+
+    <!-- Mois et Année -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <p class="text-sm mb-1">Mois <span class="text-red-500">*</span></p>
+        <select
+          formControlName="monthNumber"
+          class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+        >
+          <option *ngFor="let month of months" [value]="month.value">
+            {{ month.label }}
+          </option>
+        </select>
+      </div>
+      <div>
+        <p class="text-sm mb-1">Année <span class="text-red-500">*</span></p>
+        <select
+          formControlName="year"
+          class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+        >
+          <option *ngFor="let year of years" [value]="year">
+            {{ year }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Méthode de paiement -->
+    <div>
+      <p class="text-sm mb-1">Méthode de paiement <span class="text-red-500">*</span></p>
+      <select
+        formControlName="method"
+        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+      >
+        <option *ngFor="let method of paymentMethods" [value]="method.value">
+          {{ method.label }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          paymentForm.get('method')?.invalid &&
+          paymentForm.get('method')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Veuillez sélectionner une méthode de paiement
+      </div>
+    </div>
+
+    <!-- Statut -->
+    <div>
+      <p class="text-sm mb-1">Statut <span class="text-red-500">*</span></p>
+      <select
+        formControlName="status"
+        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+      >
+        <option *ngFor="let status of statusOptions" [value]="status.value">
+          {{ status.label }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          paymentForm.get('status')?.invalid &&
+          paymentForm.get('status')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Veuillez sélectionner un statut
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-4 mt-4">
+      <button
+        type="button"
+        (click)="close()"
+        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+      >
+        Annuler
+      </button>
+      <button
+        type="submit"
+        [disabled]="isSubmitting"
+        class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 min-w-[160px]"
+      >
+        <span *ngIf="!isSubmitting">{{ isEditing ? 'Modifier le paiement' : 'Créer le paiement' }}</span>
+        <span *ngIf="isSubmitting" class="flex items-center gap-2">
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ isEditing ? 'Modification...' : 'Création...' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+

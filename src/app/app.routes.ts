@@ -22,6 +22,8 @@ import { ClassesComponent } from './views/pages/classes/classes.component';
 import { TeachersComponent } from './views/pages/teachers/teachers.component';
 import { CyclesComponent } from './views/pages/cycles/cycles.component';
 import { StudentsComponent } from './views/pages/students/students.component';
+import { DetailStudentComponent } from './views/components/detail-student/detail-student.component';
+import { DetailPaymentComponent } from './views/components/detail-payment/detail-payment.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent }, // Rediriger vers login par défaut
@@ -94,11 +96,29 @@ export const routes: Routes = [
       },
       {
         path: 'students',
-        component: StudentsComponent,
+        children: [
+          {
+            path: '',
+            component: StudentsComponent,
+          },
+          {
+            path: ':id',
+            component: DetailStudentComponent,
+          },
+        ],
       },
       {
         path: 'payments',
-        component: PaymentsComponent,
+        children: [
+          {
+            path: '',
+            component: PaymentsComponent,
+          },
+          {
+            path: ':id',
+            component: DetailPaymentComponent,
+          },
+        ],
       },
       {
         path: 'grades',

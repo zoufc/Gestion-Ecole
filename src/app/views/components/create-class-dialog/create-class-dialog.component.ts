@@ -113,15 +113,11 @@ export class CreateClassDialogComponent implements OnInit {
   loadTeachers(): void {
     this.isLoadingTeachers = true;
     // Récupérer les enseignants
-    this.userService.getTeachersList({ role: 'teacher' }).subscribe({
+    this.userService.getTeachersList({ role: 'Teacher' }).subscribe({
       next: (response: any) => {
         const teachers = response?.data || response || [];
-        this.teachers = teachers.filter(
-          (t: any) =>
-            t.role === 'teacher' ||
-            t.roles === 'teacher' ||
-            t.role?.toLowerCase() === 'enseignant'
-        );
+        this.teachers = teachers;
+        console.log('TEACHERS', this.teachers);
         this.isLoadingTeachers = false;
       },
       error: (error) => {

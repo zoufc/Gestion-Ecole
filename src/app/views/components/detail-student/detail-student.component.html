@@ -1,0 +1,228 @@
+<div class="flex flex-col gap-6 p-6">
+  <!-- En-tête avec bouton retour -->
+  <div class="flex items-center gap-4">
+    <button (click)="goBack()" class="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+    </button>
+    <h1 class="text-2xl font-bold text-primary-text">Détails de l'élève</h1>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+  </div>
+
+  <!-- Student Details -->
+  <div *ngIf="!isLoading && student()" class="flex flex-col gap-6">
+    <!-- Badge et Informations personnelles côte à côte -->
+    <div class="bg-card rounded-lg p-6 shadow-lg">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h2 class="text-xl font-bold text-primary-text">Badge étudiant</h2>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <button (click)="downloadBadgeAsPNG()"
+            class="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors w-full sm:w-auto justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 15V3M12 15L8 11M12 15L16 11M2 17L2 19C2 19.5304 2.21071 20.0391 2.58579 20.4142C2.96086 20.7893 3.46957 21 4 21H20C20.5304 21 21.0391 20.7893 21.4142 20.4142C21.7893 20.0391 22 19.5304 22 19V17"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Télécharger le badge</span>
+          </button>
+          <button (click)="printBadge()"
+            class="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors w-full sm:w-auto justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Imprimer le badge</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Badge -->
+        <div #badgeElement id="badgeElement"
+          class="flex flex-col items-center p-4 sm:p-6 md:p-8 rounded-lg border-2 w-full lg:w-[400px] max-w-full lg:flex-shrink-0"
+          style="min-height: 400px; background-color: #0d3b66; color: #ffffff; border-color: #0d3b66;">
+          <!-- Logo de l'école -->
+          <div class="mb-3 sm:mb-4">
+            <img [src]="getSchoolLogo()" [alt]="getSchoolName()"
+              class="h-16 sm:h-20 md:h-24 w-auto object-contain max-w-full"
+              onerror="this.src='assets/logo_ecole.png'" />
+          </div>
+
+          <!-- Nom de l'école -->
+          <h3 class="text-base sm:text-lg md:text-xl font-bold mb-4 sm:mb-6 text-center px-2 break-words"
+            style="color: #ffffff !important;">
+            {{ getSchoolName() }}
+          </h3>
+
+          <!-- QR Code -->
+          <div class="mb-4 sm:mb-6">
+            <qrcode [qrdata]="getQRCodeData()" [width]="getQRCodeWidth()" [errorCorrectionLevel]="'M'"
+              [colorDark]="'#000000'" [colorLight]="'#ffffff'"></qrcode>
+          </div>
+
+          <!-- Informations de l'élève -->
+          <div class="text-center px-2">
+            <p class="text-lg sm:text-xl md:text-2xl font-bold mb-2 break-words" style="color: #ffffff !important;">{{
+              getStudentName() }}</p>
+            <p class="text-sm sm:text-base md:text-lg mb-1" style="color: #e0e6f1 !important;">
+              <strong style="color: #e0e6f1 !important;">N°:</strong> {{ getStudentNumber() }}
+            </p>
+            <p class="text-xs sm:text-sm md:text-base break-words" style="color: #e0e6f1 !important;">
+              {{ student()?.class?.name || student()?.class_name || 'Non assigné' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Informations personnelles -->
+        <div class="flex-1 bg-card rounded-lg p-6">
+          <h2 class="text-xl font-bold mb-4 text-primary-text">Informations personnelles</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Nom complet</p>
+              <p class="text-lg font-semibold text-primary-text">{{ getStudentName() }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Date de naissance</p>
+              <p class="text-lg font-semibold text-primary-text">
+                {{ formatDate(student()?.birthDate || student()?.birth_date || student()?.dateOfBirth ||
+                student()?.date_of_birth) }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Genre</p>
+              <p class="text-lg font-semibold text-primary-text">{{ getGenderLabel() }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Numéro étudiant</p>
+              <p class="text-lg font-semibold text-primary-text">
+                {{ student()?.student_number || student()?.studentNumber || 'Non assigné' }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Classe</p>
+              <p class="text-lg font-semibold text-primary-text">
+                {{ student()?.class?.name || student()?.class_name || 'Non assigné' }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Note d'information sur le badge -->
+          <div class="mt-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+            <p class="text-sm text-blue-700 dark:text-blue-300">
+              <strong>Badge :</strong> Ce badge peut être scanné pour accéder rapidement aux informations de l'élève.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations parentales -->
+    <div class="bg-card rounded-lg p-6 shadow-lg">
+      <h2 class="text-xl font-bold mb-4 text-primary-text">Informations parentales</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Nom complet du parent</p>
+          <p class="text-lg font-semibold text-primary-text">
+            {{ student()?.parentFullName || student()?.parent_full_name || student()?.parentName ||
+            student()?.parent_name || 'Non renseigné' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Téléphone du parent</p>
+          <p class="text-lg font-semibold text-primary-text">
+            {{ student()?.parentPhoneNumber || student()?.parent_phone_number || student()?.parentPhone ||
+            student()?.parent_phone || 'Non renseigné' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Email du parent</p>
+          <p class="text-lg font-semibold text-primary-text">
+            {{ student()?.parentEmail || student()?.parent_email || 'Non renseigné' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques de paiement -->
+    <div class="bg-card rounded-lg p-6 shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-primary-text">Statistiques de paiement</h2>
+        <button (click)="openCreatePaymentDialog()"
+          class="rounded px-4 py-2 bg-primary-500 text-white border-primary-500 border hover:bg-primary-600 cursor-pointer transition-colors flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
+          </svg>
+          Ajouter un paiement
+        </button>
+      </div>
+      <div *ngIf="isLoadingPaymentStats" class="flex justify-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+      </div>
+      <div *ngIf="!isLoadingPaymentStats && paymentStats()" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total payé</p>
+          <p class="text-2xl font-bold text-primary-500">
+            {{ paymentStats()?.totalPaid || 0 }} FCFA
+          </p>
+        </div>
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total dû</p>
+          <p class="text-2xl font-bold text-yellow-500">
+            {{ paymentStats()?.totalDue || 0 }} FCFA
+          </p>
+        </div>
+        <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Solde</p>
+          <p class="text-2xl font-bold text-green-500">
+            {{ paymentStats()?.balance || 0 }} FCFA
+          </p>
+        </div>
+      </div>
+      <div *ngIf="!isLoadingPaymentStats && !paymentStats()" class="text-center py-8 text-gray-500">
+        Aucune statistique de paiement disponible
+      </div>
+    </div>
+
+    <!-- Statistiques de notes -->
+    <div class="bg-card rounded-lg p-6 shadow-lg">
+      <h2 class="text-xl font-bold mb-4 text-primary-text">Statistiques de notes</h2>
+      <div *ngIf="isLoadingGradeStats" class="flex justify-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+      </div>
+      <div *ngIf="!isLoadingGradeStats && gradeStats()" class="flex flex-col gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Moyenne générale</p>
+            <p class="text-2xl font-bold text-blue-500">
+              {{ gradeStats()?.average || 0 }}/20
+            </p>
+          </div>
+          <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Nombre de notes</p>
+            <p class="text-2xl font-bold text-purple-500">
+              {{ gradeStats()?.totalGrades || 0 }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!isLoadingGradeStats && !gradeStats()" class="text-center py-8 text-gray-500">
+        Aucune statistique de notes disponible
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && !student()" class="flex flex-col items-center justify-center py-20">
+    <p class="text-lg text-gray-500">Élève non trouvé</p>
+    <button (click)="goBack()" class="mt-4 px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600">
+      Retour à la liste
+    </button>
+  </div>
+</div>

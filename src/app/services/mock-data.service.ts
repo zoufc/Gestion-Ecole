@@ -260,7 +260,12 @@ export class MockDataService {
 
     // Filtrer par recherche
     if (params.name || params.email || params.phone) {
-      const searchTerm = (params.name || params.email || params.phone || '').toLowerCase();
+      const searchTerm = (
+        params.name ||
+        params.email ||
+        params.phone ||
+        ''
+      ).toLowerCase();
       filtered = filtered.filter(
         (s) =>
           s.first_name.toLowerCase().includes(searchTerm) ||
@@ -390,11 +395,19 @@ export class MockDataService {
 
   getCourseStatistics(): Observable<any> {
     const total = this.mockCourses.length;
-    const completed = this.mockCourses.filter((c) => c.status === 'completed').length;
-    const scheduled = this.mockCourses.filter((c) => c.status === 'scheduled').length;
-    const toCome = scheduled + this.mockCourses.filter((c) => c.status === 'in_progress').length;
-    const canceled = this.mockCourses.filter((c) => c.status === 'canceled').length;
-    
+    const completed = this.mockCourses.filter(
+      (c) => c.status === 'completed'
+    ).length;
+    const scheduled = this.mockCourses.filter(
+      (c) => c.status === 'scheduled'
+    ).length;
+    const toCome =
+      scheduled +
+      this.mockCourses.filter((c) => c.status === 'in_progress').length;
+    const canceled = this.mockCourses.filter(
+      (c) => c.status === 'canceled'
+    ).length;
+
     return of({
       data: {
         // Pour compatibilité avec le template existant
@@ -405,7 +418,8 @@ export class MockDataService {
         // Nouvelles propriétés pour la gestion d'école
         total: total,
         scheduled: scheduled,
-        in_progress: this.mockCourses.filter((c) => c.status === 'in_progress').length,
+        in_progress: this.mockCourses.filter((c) => c.status === 'in_progress')
+          .length,
         completed: completed,
         canceled: canceled,
       },
@@ -413,7 +427,7 @@ export class MockDataService {
   }
 
   getCourseById(id: string): Observable<any> {
-    const course = this.mockCourses.find(c => c.id.toString() === id);
+    const course = this.mockCourses.find((c) => c.id.toString() === id);
     if (course) {
       // Ajouter des propriétés supplémentaires pour simuler les détails complets
       return of({
@@ -424,7 +438,7 @@ export class MockDataService {
           end_date: `${course.scheduled_date}T${course.end_time}:00`,
           is_validated: true,
           rdvs_notes: [],
-        }
+        },
       }).pipe(delay(300));
     }
     return of({ data: null }).pipe(delay(300));
@@ -434,15 +448,15 @@ export class MockDataService {
     // Simuler un historique vide ou avec quelques entrées
     return of({
       data: {
-        historicals: []
-      }
+        historicals: [],
+      },
     }).pipe(delay(300));
   }
 
   getCourseDocuments(id: string): Observable<any> {
     // Simuler des documents vides
     return of({
-      data: []
+      data: [],
     }).pipe(delay(300));
   }
 
@@ -460,7 +474,7 @@ export class MockDataService {
       month: '2024-12',
       year: 2024,
       status: 'paid',
-      payment_method: 'bank_transfer',
+      payment_method: 'BANK_TRANSFER',
       reference: 'PAY001',
     },
     {
@@ -475,7 +489,7 @@ export class MockDataService {
       month: '2024-11',
       year: 2024,
       status: 'paid',
-      payment_method: 'cash',
+      payment_method: 'CASH',
       reference: 'PAY002',
     },
     {
@@ -490,7 +504,7 @@ export class MockDataService {
       month: '2024-12',
       year: 2024,
       status: 'paid',
-      payment_method: 'mobile_money',
+      payment_method: 'OM',
       reference: 'PAY003',
     },
     {
@@ -535,7 +549,7 @@ export class MockDataService {
       month: '2024-12',
       year: 2024,
       status: 'paid',
-      payment_method: 'bank_transfer',
+      payment_method: 'BANK_TRANSFER',
       reference: 'PAY004',
     },
     {
@@ -550,7 +564,7 @@ export class MockDataService {
       month: '2024-12',
       year: 2024,
       status: 'paid',
-      payment_method: 'cash',
+      payment_method: 'CASH',
       reference: 'PAY005',
     },
   ];
@@ -566,7 +580,9 @@ export class MockDataService {
 
     // Filtrer par élève
     if (params.student_id) {
-      filtered = filtered.filter((p) => p.student_id.toString() === params.student_id.toString());
+      filtered = filtered.filter(
+        (p) => p.student_id.toString() === params.student_id.toString()
+      );
     }
 
     // Filtrer par recherche
@@ -619,21 +635,31 @@ export class MockDataService {
     return this.getPayments({ ...params, student_id: studentId });
   }
 
-  getPaymentStatistics(studentId?: number): Observable<any> {
+  getPaymentStatistics(studentId?: string): Observable<any> {
     let payments = [...this.mockPayments];
 
-    // Filtrer par élève si spécifié
+    // Filtrer par studentId si fourni
     if (studentId) {
-      payments = payments.filter((p) => p.student_id === studentId);
+      payments = payments.filter(
+        (p) => p.student_id.toString() === studentId.toString()
+      );
     }
 
     const totalDue = payments.reduce((sum, p) => sum + p.amount, 0);
-    const totalPaid = payments.filter((p) => p.status === 'paid').reduce((sum, p) => sum + p.amount, 0);
-    const totalPending = payments.filter((p) => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0);
-    const totalOverdue = payments.filter((p) => p.status === 'overdue').reduce((sum, p) => sum + p.amount, 0);
+    const totalPaid = payments
+      .filter((p) => p.status === 'paid')
+      .reduce((sum, p) => sum + p.amount, 0);
+    const totalPending = payments
+      .filter((p) => p.status === 'pending')
+      .reduce((sum, p) => sum + p.amount, 0);
+    const totalOverdue = payments
+      .filter((p) => p.status === 'overdue')
+      .reduce((sum, p) => sum + p.amount, 0);
 
     // Grouper par mois
-    const monthlyPayments: { [key: string]: { month: string; amount: number; status: string } } = {};
+    const monthlyPayments: {
+      [key: string]: { month: string; amount: number; status: string };
+    } = {};
     payments.forEach((p) => {
       if (!monthlyPayments[p.month]) {
         monthlyPayments[p.month] = {
@@ -645,7 +671,8 @@ export class MockDataService {
       monthlyPayments[p.month].amount += p.amount;
     });
 
-    const paymentRate = totalDue > 0 ? Math.round((totalPaid / totalDue) * 100) : 0;
+    const paymentRate =
+      totalDue > 0 ? Math.round((totalPaid / totalDue) * 100) : 0;
 
     const stats: any = {
       total_paid: totalPaid,
@@ -658,7 +685,9 @@ export class MockDataService {
 
     // Si un élève spécifique, ajouter ses infos
     if (studentId) {
-      const student = this.mockStudents.find((s) => s.id === studentId);
+      const student = this.mockStudents.find(
+        (s) => s.id.toString() === studentId.toString()
+      );
       if (student) {
         stats.student_id = student.id;
         stats.student_name = `${student.first_name} ${student.last_name}`;
@@ -666,7 +695,9 @@ export class MockDataService {
     } else {
       // Statistiques globales
       stats.total_students = this.mockStudents.length;
-      stats.students_with_payments = new Set(payments.map((p) => p.student_id)).size;
+      stats.students_with_payments = new Set(
+        payments.map((p) => p.student_id)
+      ).size;
     }
 
     return of({ data: stats }).pipe(delay(1200));
@@ -798,12 +829,16 @@ export class MockDataService {
 
     // Filtrer par élève
     if (params.student_id) {
-      filtered = filtered.filter((g) => g.student_id.toString() === params.student_id.toString());
+      filtered = filtered.filter(
+        (g) => g.student_id.toString() === params.student_id.toString()
+      );
     }
 
     // Filtrer par matière
     if (params.subject_id) {
-      filtered = filtered.filter((g) => g.subject_id.toString() === params.subject_id.toString());
+      filtered = filtered.filter(
+        (g) => g.subject_id.toString() === params.subject_id.toString()
+      );
     }
 
     // Filtrer par classe
@@ -877,15 +912,29 @@ export class MockDataService {
       id: this.mockGrades.length + 1,
       ...gradeData,
       percentage: Math.round((gradeData.value / gradeData.max_value) * 100),
-      student_name: this.mockStudents.find((s) => s.id === gradeData.student_id)?.first_name + ' ' + this.mockStudents.find((s) => s.id === gradeData.student_id)?.last_name,
-      subject_name: this.mockSubjects.find((s) => s.id === gradeData.subject_id)?.name,
-      teacher_name: this.mockTeachers.find((t) => t.id === gradeData.teacher_id)?.first_name + ' ' + this.mockTeachers.find((t) => t.id === gradeData.teacher_id)?.last_name,
-      class_name: this.mockStudents.find((s) => s.id === gradeData.student_id)?.class_name,
-      student_number: this.mockStudents.find((s) => s.id === gradeData.student_id)?.student_number,
+      student_name:
+        this.mockStudents.find((s) => s.id === gradeData.student_id)
+          ?.first_name +
+        ' ' +
+        this.mockStudents.find((s) => s.id === gradeData.student_id)?.last_name,
+      subject_name: this.mockSubjects.find((s) => s.id === gradeData.subject_id)
+        ?.name,
+      teacher_name:
+        this.mockTeachers.find((t) => t.id === gradeData.teacher_id)
+          ?.first_name +
+        ' ' +
+        this.mockTeachers.find((t) => t.id === gradeData.teacher_id)?.last_name,
+      class_name: this.mockStudents.find((s) => s.id === gradeData.student_id)
+        ?.class_name,
+      student_number: this.mockStudents.find(
+        (s) => s.id === gradeData.student_id
+      )?.student_number,
       created_at: new Date().toISOString(),
     };
     this.mockGrades.push(newGrade);
-    return of({ data: newGrade, message: 'Note créée avec succès' }).pipe(delay(500));
+    return of({ data: newGrade, message: 'Note créée avec succès' }).pipe(
+      delay(500)
+    );
   }
 
   updateGrade(id: number, gradeData: any): Observable<any> {
@@ -895,12 +944,29 @@ export class MockDataService {
         ...this.mockGrades[index],
         ...gradeData,
         percentage: Math.round((gradeData.value / gradeData.max_value) * 100),
-        student_name: gradeData.student_id ? this.mockStudents.find((s) => s.id === gradeData.student_id)?.first_name + ' ' + this.mockStudents.find((s) => s.id === gradeData.student_id)?.last_name : this.mockGrades[index].student_name,
-        subject_name: gradeData.subject_id ? this.mockSubjects.find((s) => s.id === gradeData.subject_id)?.name : this.mockGrades[index].subject_name,
-        teacher_name: gradeData.teacher_id ? this.mockTeachers.find((t) => t.id === gradeData.teacher_id)?.first_name + ' ' + this.mockTeachers.find((t) => t.id === gradeData.teacher_id)?.last_name : this.mockGrades[index].teacher_name,
+        student_name: gradeData.student_id
+          ? this.mockStudents.find((s) => s.id === gradeData.student_id)
+              ?.first_name +
+            ' ' +
+            this.mockStudents.find((s) => s.id === gradeData.student_id)
+              ?.last_name
+          : this.mockGrades[index].student_name,
+        subject_name: gradeData.subject_id
+          ? this.mockSubjects.find((s) => s.id === gradeData.subject_id)?.name
+          : this.mockGrades[index].subject_name,
+        teacher_name: gradeData.teacher_id
+          ? this.mockTeachers.find((t) => t.id === gradeData.teacher_id)
+              ?.first_name +
+            ' ' +
+            this.mockTeachers.find((t) => t.id === gradeData.teacher_id)
+              ?.last_name
+          : this.mockGrades[index].teacher_name,
       };
       this.mockGrades[index] = updatedGrade;
-      return of({ data: updatedGrade, message: 'Note modifiée avec succès' }).pipe(delay(500));
+      return of({
+        data: updatedGrade,
+        message: 'Note modifiée avec succès',
+      }).pipe(delay(500));
     }
     return of({ error: 'Note non trouvée' }).pipe(delay(300));
   }
@@ -914,32 +980,41 @@ export class MockDataService {
     return of({ error: 'Note non trouvée' }).pipe(delay(300));
   }
 
-  getGradeStatistics(studentId?: number, subjectId?: number, classId?: number): Observable<any> {
+  getGradeStatistics(
+    studentId?: string,
+    subjectId?: string,
+    classId?: string
+  ): Observable<any> {
     let filtered = [...this.mockGrades];
 
     if (studentId) {
-      filtered = filtered.filter((g) => g.student_id === studentId);
+      filtered = filtered.filter(
+        (g) => g.student_id.toString() === studentId.toString()
+      );
     }
     if (subjectId) {
-      filtered = filtered.filter((g) => g.subject_id === subjectId);
+      filtered = filtered.filter(
+        (g) => g.subject_id.toString() === subjectId.toString()
+      );
     }
     if (classId) {
-      const className = this.mockClasses.find((c) => c.id === classId)?.name;
+      const className = this.mockClasses.find(
+        (c) => c.id.toString() === classId.toString()
+      )?.name;
       if (className) {
         filtered = filtered.filter((g) => g.class_name === className);
       }
     }
 
     const total = filtered.length;
-    const average = total > 0
-      ? filtered.reduce((sum, g) => sum + g.percentage, 0) / total
-      : 0;
-    const maxGrade = total > 0
-      ? Math.max(...filtered.map((g) => g.percentage))
-      : 0;
-    const minGrade = total > 0
-      ? Math.min(...filtered.map((g) => g.percentage))
-      : 0;
+    const average =
+      total > 0
+        ? filtered.reduce((sum, g) => sum + g.percentage, 0) / total
+        : 0;
+    const maxGrade =
+      total > 0 ? Math.max(...filtered.map((g) => g.percentage)) : 0;
+    const minGrade =
+      total > 0 ? Math.min(...filtered.map((g) => g.percentage)) : 0;
 
     // Répartition par type
     const byType = {
@@ -963,7 +1038,9 @@ export class MockDataService {
       bySubject[g.subject_name].total += g.percentage;
     });
     Object.keys(bySubject).forEach((subject) => {
-      bySubject[subject].average = Math.round(bySubject[subject].total / bySubject[subject].count);
+      bySubject[subject].average = Math.round(
+        bySubject[subject].total / bySubject[subject].count
+      );
     });
 
     const stats = {
@@ -980,7 +1057,9 @@ export class MockDataService {
 
   // Méthodes pour les classes
   getClassById(id: string): Observable<any> {
-    const classItem = this.mockClasses.find((c) => c.id.toString() === id.toString());
+    const classItem = this.mockClasses.find(
+      (c) => c.id.toString() === id.toString()
+    );
     if (classItem) {
       return of({ data: classItem }).pipe(delay(300));
     }
@@ -988,17 +1067,23 @@ export class MockDataService {
   }
 
   getStudentsByClass(classId: string): Observable<any> {
-    const classItem = this.mockClasses.find((c) => c.id.toString() === classId.toString());
+    const classItem = this.mockClasses.find(
+      (c) => c.id.toString() === classId.toString()
+    );
     if (!classItem) {
       return of({ data: [] }).pipe(delay(300));
     }
 
-    const students = this.mockStudents.filter((s) => s.class_name === classItem.name);
+    const students = this.mockStudents.filter(
+      (s) => s.class_name === classItem.name
+    );
     return of({ data: students }).pipe(delay(500));
   }
 
   getClassSchedule(classId: string): Observable<any> {
-    const classItem = this.mockClasses.find((c) => c.id.toString() === classId.toString());
+    const classItem = this.mockClasses.find(
+      (c) => c.id.toString() === classId.toString()
+    );
     if (!classItem) {
       return of({ data: [] }).pipe(delay(300));
     }
@@ -1011,52 +1096,315 @@ export class MockDataService {
   private generateMockSchedule(className: string): any[] {
     // Emploi du temps basé sur le niveau de la classe
     const schedules: any[] = [];
-    
+
     if (className === '6ème A') {
       schedules.push(
-        { id: 1, day_of_week: 1, start_time: '08:00', end_time: '09:00', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 101' },
-        { id: 2, day_of_week: 1, start_time: '09:15', end_time: '10:15', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 102' },
-        { id: 3, day_of_week: 1, start_time: '10:30', end_time: '11:30', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 103' },
-        { id: 4, day_of_week: 1, start_time: '14:00', end_time: '15:00', subject_name: 'Histoire-Géographie', teacher_name: 'Thomas Simon', classroom: 'Salle 104' },
-        { id: 5, day_of_week: 1, start_time: '15:15', end_time: '16:15', subject_name: 'Anglais', teacher_name: 'Marie Dubois', classroom: 'Salle 101' },
-        { id: 6, day_of_week: 2, start_time: '08:00', end_time: '09:00', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 102' },
-        { id: 7, day_of_week: 2, start_time: '09:15', end_time: '10:15', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 101' },
-        { id: 8, day_of_week: 2, start_time: '10:30', end_time: '11:30', subject_name: 'EPS', teacher_name: 'Pierre Moreau', classroom: 'Gymnase' },
-        { id: 9, day_of_week: 2, start_time: '14:00', end_time: '15:00', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 103' },
-        { id: 10, day_of_week: 3, start_time: '08:00', end_time: '09:00', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 101' },
-        { id: 11, day_of_week: 3, start_time: '09:15', end_time: '10:15', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 102' },
-        { id: 12, day_of_week: 3, start_time: '14:00', end_time: '15:00', subject_name: 'Histoire-Géographie', teacher_name: 'Thomas Simon', classroom: 'Salle 104' },
-        { id: 13, day_of_week: 4, start_time: '08:00', end_time: '09:00', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 103' },
-        { id: 14, day_of_week: 4, start_time: '09:15', end_time: '10:15', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 101' },
-        { id: 15, day_of_week: 4, start_time: '10:30', end_time: '11:30', subject_name: 'Anglais', teacher_name: 'Marie Dubois', classroom: 'Salle 101' },
-        { id: 16, day_of_week: 4, start_time: '14:00', end_time: '15:00', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 102' },
-        { id: 17, day_of_week: 5, start_time: '08:00', end_time: '09:00', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 102' },
-        { id: 18, day_of_week: 5, start_time: '09:15', end_time: '10:15', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 101' },
-        { id: 19, day_of_week: 5, start_time: '10:30', end_time: '11:30', subject_name: 'EPS', teacher_name: 'Pierre Moreau', classroom: 'Gymnase' },
+        {
+          id: 1,
+          day_of_week: 1,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 101',
+        },
+        {
+          id: 2,
+          day_of_week: 1,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 102',
+        },
+        {
+          id: 3,
+          day_of_week: 1,
+          start_time: '10:30',
+          end_time: '11:30',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 103',
+        },
+        {
+          id: 4,
+          day_of_week: 1,
+          start_time: '14:00',
+          end_time: '15:00',
+          subject_name: 'Histoire-Géographie',
+          teacher_name: 'Thomas Simon',
+          classroom: 'Salle 104',
+        },
+        {
+          id: 5,
+          day_of_week: 1,
+          start_time: '15:15',
+          end_time: '16:15',
+          subject_name: 'Anglais',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 101',
+        },
+        {
+          id: 6,
+          day_of_week: 2,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 102',
+        },
+        {
+          id: 7,
+          day_of_week: 2,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 101',
+        },
+        {
+          id: 8,
+          day_of_week: 2,
+          start_time: '10:30',
+          end_time: '11:30',
+          subject_name: 'EPS',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Gymnase',
+        },
+        {
+          id: 9,
+          day_of_week: 2,
+          start_time: '14:00',
+          end_time: '15:00',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 103',
+        },
+        {
+          id: 10,
+          day_of_week: 3,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 101',
+        },
+        {
+          id: 11,
+          day_of_week: 3,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 102',
+        },
+        {
+          id: 12,
+          day_of_week: 3,
+          start_time: '14:00',
+          end_time: '15:00',
+          subject_name: 'Histoire-Géographie',
+          teacher_name: 'Thomas Simon',
+          classroom: 'Salle 104',
+        },
+        {
+          id: 13,
+          day_of_week: 4,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 103',
+        },
+        {
+          id: 14,
+          day_of_week: 4,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 101',
+        },
+        {
+          id: 15,
+          day_of_week: 4,
+          start_time: '10:30',
+          end_time: '11:30',
+          subject_name: 'Anglais',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 101',
+        },
+        {
+          id: 16,
+          day_of_week: 4,
+          start_time: '14:00',
+          end_time: '15:00',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 102',
+        },
+        {
+          id: 17,
+          day_of_week: 5,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 102',
+        },
+        {
+          id: 18,
+          day_of_week: 5,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 101',
+        },
+        {
+          id: 19,
+          day_of_week: 5,
+          start_time: '10:30',
+          end_time: '11:30',
+          subject_name: 'EPS',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Gymnase',
+        }
       );
     } else if (className === '5ème B') {
       schedules.push(
-        { id: 20, day_of_week: 1, start_time: '08:00', end_time: '09:00', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 201' },
-        { id: 21, day_of_week: 1, start_time: '09:15', end_time: '10:15', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 202' },
-        { id: 22, day_of_week: 1, start_time: '10:30', end_time: '11:30', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 203' },
-        { id: 23, day_of_week: 2, start_time: '08:00', end_time: '09:00', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 203' },
-        { id: 24, day_of_week: 2, start_time: '09:15', end_time: '10:15', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 201' },
-        { id: 25, day_of_week: 3, start_time: '08:00', end_time: '09:00', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 202' },
-        { id: 26, day_of_week: 4, start_time: '08:00', end_time: '09:00', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 201' },
-        { id: 27, day_of_week: 5, start_time: '08:00', end_time: '09:00', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 203' },
+        {
+          id: 20,
+          day_of_week: 1,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 201',
+        },
+        {
+          id: 21,
+          day_of_week: 1,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 202',
+        },
+        {
+          id: 22,
+          day_of_week: 1,
+          start_time: '10:30',
+          end_time: '11:30',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 203',
+        },
+        {
+          id: 23,
+          day_of_week: 2,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 203',
+        },
+        {
+          id: 24,
+          day_of_week: 2,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 201',
+        },
+        {
+          id: 25,
+          day_of_week: 3,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 202',
+        },
+        {
+          id: 26,
+          day_of_week: 4,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 201',
+        },
+        {
+          id: 27,
+          day_of_week: 5,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 203',
+        }
       );
     } else if (className === '4ème A') {
       schedules.push(
-        { id: 28, day_of_week: 1, start_time: '08:00', end_time: '09:00', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 301' },
-        { id: 29, day_of_week: 1, start_time: '09:15', end_time: '10:15', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 302' },
-        { id: 30, day_of_week: 2, start_time: '08:00', end_time: '09:00', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 303' },
-        { id: 31, day_of_week: 3, start_time: '08:00', end_time: '09:00', subject_name: 'Mathématiques', teacher_name: 'Marie Dubois', classroom: 'Salle 301' },
-        { id: 32, day_of_week: 4, start_time: '08:00', end_time: '09:00', subject_name: 'Français', teacher_name: 'Pierre Moreau', classroom: 'Salle 302' },
-        { id: 33, day_of_week: 5, start_time: '08:00', end_time: '09:00', subject_name: 'Sciences', teacher_name: 'Julie Laurent', classroom: 'Salle 303' },
+        {
+          id: 28,
+          day_of_week: 1,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 301',
+        },
+        {
+          id: 29,
+          day_of_week: 1,
+          start_time: '09:15',
+          end_time: '10:15',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 302',
+        },
+        {
+          id: 30,
+          day_of_week: 2,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 303',
+        },
+        {
+          id: 31,
+          day_of_week: 3,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Mathématiques',
+          teacher_name: 'Marie Dubois',
+          classroom: 'Salle 301',
+        },
+        {
+          id: 32,
+          day_of_week: 4,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Français',
+          teacher_name: 'Pierre Moreau',
+          classroom: 'Salle 302',
+        },
+        {
+          id: 33,
+          day_of_week: 5,
+          start_time: '08:00',
+          end_time: '09:00',
+          subject_name: 'Sciences',
+          teacher_name: 'Julie Laurent',
+          classroom: 'Salle 303',
+        }
       );
     }
 
     return schedules;
   }
 }
-

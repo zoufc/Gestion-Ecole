@@ -58,7 +58,7 @@ export class StudentGradesDialogComponent implements OnInit {
 
   loadGradeStatistics(): void {
     this.isLoadingStats = true;
-    this.mockData.getGradeStatistics(this.studentId).subscribe({
+    this.mockData.getGradeStatistics(this.studentId.toString()).subscribe({
       next: (response: any) => {
         this.gradeStats.set(response.data);
         this.isLoadingStats = false;

@@ -76,7 +76,7 @@
 
           <!-- Students List -->
           <tr
-            *ngFor="let student of studentsList()"
+            *ngFor="let student of filteredStudentsList()"
             class="border-b border-gray-200 hover:bg-gray-50 transition-colors"
           >
             <td class="p-4">
@@ -152,6 +152,70 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!isLoading && studentsList().length > 0" class="flex flex-row md:justify-end justify-center gap-1 m-4">
+      <button
+        class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="changePage(page - 1)"
+        [disabled]="page === 1"
+      >
+        Précédent
+      </button>
+      <button
+        class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="changePage(page - 1)"
+        [disabled]="page === 1"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_1265_7706)">
+            <path
+              d="M17.5098 3.8701L15.7298 2.1001L5.83984 12.0001L15.7398 21.9001L17.5098 20.1301L9.37984 12.0001L17.5098 3.8701Z"
+              fill="currentColor"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_1265_7706">
+              <rect width="24" height="24" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      </button>
+      <button
+        *ngFor="let pageNumber of [].constructor(totalPages); let i = index"
+        (click)="changePage(i + 1)"
+        class="rounded-lg px-4 bg-[#4B465C29] cursor-pointer transition-ease"
+        [ngClass]="{ 'bg-primary-500 text-white': page === i + 1 }"
+      >
+        {{ i + 1 }}
+      </button>
+      <button
+        class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="changePage(page + 1)"
+        [disabled]="page === totalPages"
+      >
+        Suivant
+      </button>
+      <button
+        class="md:hidden px-1 py-2 rounded-lg bg-primary-500 text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="changePage(page + 1)"
+        [disabled]="page === totalPages"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_1265_7724)">
+            <path
+              d="M6.49023 20.1301L8.26023 21.9001L18.1602 12.0001L8.26023 2.1001L6.49023 3.8701L14.6202 12.0001L6.49023 20.1301Z"
+              fill="currentColor"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_1265_7724">
+              <rect width="24" height="24" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      </button>
     </div>
   </div>
 </div>

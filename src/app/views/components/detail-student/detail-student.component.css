@@ -1,0 +1,23 @@
+/* Styles pour l'impression du badge */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #badgeElement,
+  #badgeElement * {
+    visibility: visible;
+  }
+  
+  #badgeElement {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  
+  /* Masquer tous les autres éléments */
+  .no-print {
+    display: none !important;
+  }
+}

@@ -25,9 +25,15 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class CyclesComponent implements OnInit {
   cyclesList = signal<any[]>([]);
+  filteredCyclesList = signal<any[]>([]);
   isLoading = false;
   search: string = '';
   searchControl = new FormControl('');
+  
+  // Pagination
+  page: number = 1;
+  limit: number = 10;
+  totalPages: number = 1;
 
   constructor(
     private cycleService: CycleService,
@@ -43,7 +49,7 @@ export class CyclesComponent implements OnInit {
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.search = value || '';
-        this.loadCycles();
+        this.onSearchChange();
       });
   }
 
@@ -65,6 +71,7 @@ export class CyclesComponent implements OnInit {
         }
 
         this.cyclesList.set(filteredCycles);
+        this.updatePagination(filteredCycles);
         this.isLoading = false;
       },
       error: (error) => {
@@ -116,6 +123,28 @@ export class CyclesComponent implements OnInit {
 
   editCycle(cycle: any): void {
     this.openCreateCycleDialog(cycle);
+  }
+
+  updatePagination(cycles: any[]): void {
+    this.totalPages = Math.ceil(cycles.length / this.limit);
+    if (this.totalPages === 0) this.totalPages = 1;
+    if (this.page > this.totalPages) this.page = 1;
+    
+    const startIndex = (this.page - 1) * this.limit;
+    const endIndex = startIndex + this.limit;
+    this.filteredCyclesList.set(cycles.slice(startIndex, endIndex));
+  }
+
+  changePage(pageNumber: number): void {
+    if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+      this.page = pageNumber;
+      this.updatePagination(this.cyclesList());
+    }
+  }
+
+  onSearchChange(): void {
+    this.page = 1;
+    this.loadCycles();
   }
 }
 
