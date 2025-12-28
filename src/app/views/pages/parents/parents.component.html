@@ -3,18 +3,18 @@
   <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
     <div>
       <p class="text-xl font-bold pl-2">
-        <span class="text-[#707070]">Gestion École /</span>
-        <span class="text-primary-text">Élèves</span>
+        <span class="text-[#707070]">Gestion École / Management /</span>
+        <span class="text-primary-text">Parents</span>
       </p>
     </div>
     <button
-      (click)="openCreateStudentDialog()"
+      (click)="openCreateParentDialog()"
       class="rounded px-4 py-2 bg-primary-500 text-white border-primary-500 border-1 hover:bg-primary-600 cursor-pointer transition-colors flex items-center gap-2"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
       </svg>
-      Inscrire un élève
+      Ajouter un parent
     </button>
   </div>
 
@@ -26,23 +26,23 @@
           type="text"
           [formControl]="searchControl"
           class="w-full px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none"
-          placeholder="Rechercher un élève (nom, prénom, email, téléphone, numéro étudiant)..."
+          placeholder="Rechercher un parent (nom, email, téléphone)..."
         />
       </div>
     </div>
   </div>
 
-  <!-- Students Table -->
+  <!-- Parents Table -->
   <div class="bg-card text-primary-text shadow-lg rounded-lg overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full border-collapse">
         <thead>
           <tr class="bg-card text-primary-text border-b border-gray-300">
-            <th class="p-4 text-left font-semibold">Nom</th>
-            <th class="p-4 text-left font-semibold">Email parent</th>
-            <th class="p-4 text-left font-semibold">Téléphone parent</th>
-            <th class="p-4 text-left font-semibold">Classe</th>
-            <th class="p-4 text-left font-semibold">Numéro étudiant</th>
+            <th class="p-4 text-left font-semibold">Nom complet</th>
+            <th class="p-4 text-left font-semibold">Email</th>
+            <th class="p-4 text-left font-semibold">Téléphone</th>
+            <th class="p-4 text-left font-semibold">Nombre d'élèves</th>
+            <th class="p-4 text-left font-semibold">Accès plateforme</th>
             <th class="p-4 text-left font-semibold">Actions</th>
           </tr>
         </thead>
@@ -52,13 +52,13 @@
             <td colspan="6" class="p-8 text-center">
               <div class="flex justify-center items-center gap-2">
                 <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"></div>
-                <span>Chargement des élèves...</span>
+                <span>Chargement des parents...</span>
               </div>
             </td>
           </tr>
 
           <!-- Empty State -->
-          <tr *ngIf="!isLoading && studentsList().length === 0">
+          <tr *ngIf="!isLoading && parentsList().length === 0">
             <td colspan="6" class="p-8 text-center text-gray-500">
               <div class="flex flex-col items-center gap-2">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -68,15 +68,15 @@
                     opacity="0.3"
                   />
                 </svg>
-                <p>Aucun élève trouvé</p>
-                <p class="text-sm">{{ search ? 'Essayez une autre recherche' : 'Inscrivez votre premier élève' }}</p>
+                <p>Aucun parent trouvé</p>
+                <p class="text-sm">{{ search ? 'Essayez une autre recherche' : 'Ajoutez votre premier parent' }}</p>
               </div>
             </td>
           </tr>
 
-          <!-- Students List -->
+          <!-- Parents List -->
           <tr
-            *ngFor="let student of filteredStudentsList()"
+            *ngFor="let parent of filteredParentsList()"
             class="border-b border-gray-200 hover:bg-gray-50 transition-colors"
           >
             <td class="p-4">
@@ -90,25 +90,32 @@
                     />
                   </svg>
                 </div>
-                <span class="font-medium">{{ getStudentName(student) }}</span>
+                <span class="font-medium">{{ getParentName(parent) }}</span>
               </div>
             </td>
             <td class="p-4">
-              <span class="text-gray-600">{{ getParentEmail(student) || 'Non renseigné' }}</span>
+              <span class="text-gray-600">{{ parent.email || 'Non renseigné' }}</span>
             </td>
             <td class="p-4">
-              <span>{{ getParentPhone(student) || 'Non renseigné' }}</span>
+              <span>{{ parent.phoneNumber || parent.phone || 'Non renseigné' }}</span>
             </td>
             <td class="p-4">
-              <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-sm">{{ getClassName(student) }}</span>
+              <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-sm font-semibold">
+                {{ getStudentsCount(parent) }}
+              </span>
             </td>
             <td class="p-4">
-              <span class="font-mono text-sm">{{ student.code || student.student_number || student.studentNumber || 'N/A' }}</span>
+              <span *ngIf="hasPlatformAccess(parent)" class="px-2 py-1 rounded bg-green-100 text-green-800 text-xs font-semibold">
+                Oui
+              </span>
+              <span *ngIf="!hasPlatformAccess(parent)" class="px-2 py-1 rounded bg-gray-100 text-gray-800 text-xs font-semibold">
+                Non
+              </span>
             </td>
             <td class="p-4">
               <div class="flex gap-2">
                 <button
-                  (click)="goToStudentDetail(student._id || student.id)"
+                  (click)="goToParentDetail(parent._id || parent.id)"
                   class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
                   title="Voir détails"
                 >
@@ -122,7 +129,7 @@
                   </svg>
                 </button>
                 <button
-                  (click)="editStudent(student)"
+                  (click)="editParent(parent)"
                   class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
                   title="Modifier"
                 >
@@ -135,7 +142,7 @@
                   </svg>
                 </button>
                 <button
-                  (click)="deleteStudent(student._id || student.id, getStudentName(student))"
+                  (click)="deleteParent(parent._id || parent.id, getParentName(parent))"
                   class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer"
                   title="Supprimer"
                 >
@@ -155,7 +162,7 @@
     </div>
 
     <!-- Pagination -->
-    <div *ngIf="!isLoading && studentsList().length > 0" class="flex flex-row md:justify-end justify-center gap-1 m-4">
+    <div *ngIf="!isLoading && parentsList().length > 0" class="flex flex-row md:justify-end justify-center gap-1 m-4">
       <button
         class="hidden md:block px-4 py-2 rounded-lg bg-primary-500 text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         (click)="changePage(page - 1)"

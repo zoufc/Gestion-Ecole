@@ -1,0 +1,163 @@
+<div
+  class="fixed top-0 right-0 h-screen w-full md:w-2/3 lg:w-1/2 bg-card text-primary-text shadow-lg transform transition-transform translate-x-0 overflow-y-auto"
+>
+  <div class="flex justify-between items-center p-4 border-b border-[#707070] sticky top-0 bg-card z-10">
+    <h2 class="text-lg font-bold">
+      {{ isEditing ? 'Modifier un parent' : 'Ajouter un parent' }}
+    </h2>
+    <button
+      (click)="closeDialog()"
+      class="text-gray-500 hover:text-gray-700 cursor-pointer"
+    >
+      <div class="px-4 py-2 rounded border-1">✖</div>
+    </button>
+  </div>
+  <form [formGroup]="createParentForm" (ngSubmit)="onSubmitParent()">
+    <div class="flex flex-col p-6 gap-4 w-full">
+      <!-- Informations personnelles -->
+      <div class="border-b pb-4">
+        <h3 class="text-md font-semibold mb-3">Informations personnelles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm mb-1">Prénom <span class="text-red-500">*</span></p>
+            <input
+              type="text"
+              formControlName="firstName"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="Marie"
+            />
+            <div
+              *ngIf="
+                createParentForm.get('firstName')?.invalid &&
+                createParentForm.get('firstName')?.touched
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              Le prénom est requis
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm mb-1">Nom <span class="text-red-500">*</span></p>
+            <input
+              type="text"
+              formControlName="lastName"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="Dupont"
+            />
+            <div
+              *ngIf="
+                createParentForm.get('lastName')?.invalid &&
+                createParentForm.get('lastName')?.touched
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              Le nom est requis
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm mb-1">Téléphone <span class="text-red-500">*</span></p>
+            <input
+              type="tel"
+              formControlName="phoneNumber"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="+221 77 123 45 67"
+            />
+            <div
+              *ngIf="
+                createParentForm.get('phoneNumber')?.invalid &&
+                createParentForm.get('phoneNumber')?.touched
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              Le téléphone est requis
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm mb-1">Email</p>
+            <input
+              type="email"
+              formControlName="email"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="parent@example.com"
+            />
+            <div
+              *ngIf="
+                createParentForm.get('email')?.invalid &&
+                createParentForm.get('email')?.touched
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              L'email n'est pas valide
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm mb-1">Adresse</p>
+            <input
+              type="text"
+              formControlName="address"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="Adresse complète"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Création de compte -->
+      <div class="border-b pb-4" *ngIf="!isEditing || !data?.parent?.hasAccount">
+        <h3 class="text-md font-semibold mb-3">Accès à la plateforme</h3>
+        <div class="mb-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              formControlName="createAccount"
+              class="w-4 h-4 text-primary-500 border-gray-300 rounded focus:ring-primary-500"
+            />
+            <span class="text-sm">Créer un compte d'accès pour ce parent</span>
+          </label>
+        </div>
+
+        <div *ngIf="createParentForm.get('createAccount')?.value" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div>
+            <p class="text-sm mb-1">Email pour connexion</p>
+            <input
+              type="email"
+              formControlName="accountEmail"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="email@example.com"
+            />
+            <p class="text-xs text-gray-500 mt-1">Laissez vide si vous utilisez le téléphone</p>
+          </div>
+
+          <div>
+            <p class="text-sm mb-1">Téléphone pour connexion</p>
+            <input
+              type="tel"
+              formControlName="accountPhone"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="+221 77 123 45 67"
+            />
+            <p class="text-xs text-gray-500 mt-1">Laissez vide si vous utilisez l'email</p>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">
+          * Au moins un des deux (email ou téléphone) doit être fourni pour créer un compte
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-4 px-6 pb-6 sticky bottom-0 bg-card border-t pt-4">
+      <button
+        type="submit"
+        [disabled]="createParentForm.invalid"
+        class="bg-primary-500 text-white rounded cursor-pointer w-full px-6 py-2 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      >
+        {{ isEditing ? 'Modifier' : 'Créer' }} le parent
+      </button>
+    </div>
+  </form>
+</div>
+

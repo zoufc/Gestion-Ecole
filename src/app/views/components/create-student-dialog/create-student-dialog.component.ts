@@ -61,7 +61,8 @@ export class CreateStudentDialogComponent implements OnInit {
       birthDate: ['', [Validators.required]],
       gender: ['', [Validators.required]],
       class: ['', [Validators.required]], // Classe requise
-      parentFullName: ['', [Validators.required]],
+      parentFirstName: ['', [Validators.required]],
+      parentLastName: ['', [Validators.required]],
       parentEmail: ['', [Validators.email]],
       parentPhoneNumber: ['', [Validators.required]],
     };
@@ -105,15 +106,23 @@ export class CreateStudentDialogComponent implements OnInit {
           data.student.class ||
           data.student.class_id ||
           '',
-        parentFullName:
-          data.student.parentFullName ||
-          data.student.parent_full_name ||
-          data.student.parentName ||
-          data.student.parent_name ||
-          '',
+        parentFirstName:
+          data.student.parent?.firstName ||
+          data.student.parentFirstName ||
+          data.student.parent_first_name ||
+          this.extractFirstName(data.student),
+        parentLastName:
+          data.student.parent?.lastName ||
+          data.student.parentLastName ||
+          data.student.parent_last_name ||
+          this.extractLastName(data.student),
         parentEmail:
-          data.student.parentEmail || data.student.parent_email || '',
+          data.student.parent?.email ||
+          data.student.parentEmail ||
+          data.student.parent_email ||
+          '',
         parentPhoneNumber:
+          data.student.parent?.phoneNumber ||
           data.student.parentPhoneNumber ||
           data.student.parent_phone_number ||
           data.student.parentPhone ||
@@ -153,6 +162,32 @@ export class CreateStudentDialogComponent implements OnInit {
         this.createStudentForm.patchValue({ class: '' });
       }
     });
+  }
+
+  extractFirstName(student: any): string {
+    // Essayer d'abord avec parent.firstName
+    if (student.parent?.firstName) return student.parent.firstName;
+    
+    // Sinon, essayer de splitter parentFullName
+    const fullName = student.parentFullName || student.parent_full_name || student.parentName || student.parent_name || '';
+    if (fullName) {
+      const parts = fullName.trim().split(/\s+/);
+      return parts[0] || '';
+    }
+    return '';
+  }
+
+  extractLastName(student: any): string {
+    // Essayer d'abord avec parent.lastName
+    if (student.parent?.lastName) return student.parent.lastName;
+    
+    // Sinon, essayer de splitter parentFullName
+    const fullName = student.parentFullName || student.parent_full_name || student.parentName || student.parent_name || '';
+    if (fullName) {
+      const parts = fullName.trim().split(/\s+/);
+      return parts.slice(1).join(' ') || '';
+    }
+    return '';
   }
 
   checkUserRole(): void {
@@ -244,19 +279,19 @@ export class CreateStudentDialogComponent implements OnInit {
         birthDate: this.createStudentForm.value.birthDate,
         gender: this.createStudentForm.value.gender,
         class: this.createStudentForm.value.class,
-        parentFullName: this.createStudentForm.value.parentFullName,
+        parentFirstName: this.createStudentForm.value.parentFirstName,
+        parentLastName: this.createStudentForm.value.parentLastName,
         parentPhoneNumber: this.createStudentForm.value.parentPhoneNumber,
-        parentEmail: this.createStudentForm.value.parentEmail || undefined,
       };
+
+      // Ajouter parentEmail seulement s'il est fourni
+      if (this.createStudentForm.value.parentEmail) {
+        studentData.parentEmail = this.createStudentForm.value.parentEmail;
+      }
 
       // Ajouter l'école seulement si ce n'est pas un directeur (le backend le gère automatiquement pour les directeurs)
       if (!this.isDirector && this.createStudentForm.value.school) {
         studentData.school = this.createStudentForm.value.school;
-      }
-
-      // Supprimer parentEmail s'il est vide
-      if (!studentData.parentEmail) {
-        delete studentData.parentEmail;
       }
 
       if (this.isEditing && this.currentStudentId) {

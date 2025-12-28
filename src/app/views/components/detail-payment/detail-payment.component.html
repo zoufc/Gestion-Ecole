@@ -100,20 +100,20 @@
     </div>
 
     <!-- Informations du parent (si disponibles) -->
-    <div *ngIf="payment.student?.parentFullName || payment.student?.parentEmail || payment.student?.parentPhoneNumber" class="bg-card rounded-lg shadow-md p-6">
+    <div *ngIf="hasParentInfo()" class="bg-card rounded-lg shadow-md p-6">
       <h2 class="text-xl font-bold mb-4 text-primary-text">Informations du parent</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div *ngIf="payment.student?.parentFullName">
+        <div *ngIf="getParentName()">
           <p class="text-sm text-gray-500 mb-1">Nom complet</p>
-          <p class="text-lg font-semibold text-primary-text">{{ payment.student.parentFullName }}</p>
+          <p class="text-lg font-semibold text-primary-text">{{ getParentName() }}</p>
         </div>
-        <div *ngIf="payment.student?.parentEmail">
+        <div *ngIf="getParentEmail()">
           <p class="text-sm text-gray-500 mb-1">Email</p>
-          <p class="text-lg font-semibold text-primary-text">{{ payment.student.parentEmail }}</p>
+          <p class="text-lg font-semibold text-primary-text">{{ getParentEmail() }}</p>
         </div>
-        <div *ngIf="payment.student?.parentPhoneNumber">
+        <div *ngIf="getParentPhone()">
           <p class="text-sm text-gray-500 mb-1">Téléphone</p>
-          <p class="text-lg font-semibold text-primary-text">{{ payment.student.parentPhoneNumber }}</p>
+          <p class="text-lg font-semibold text-primary-text">{{ getParentPhone() }}</p>
         </div>
       </div>
     </div>

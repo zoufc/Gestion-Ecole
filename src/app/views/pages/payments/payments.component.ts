@@ -28,15 +28,18 @@ import { CreatePaymentDialogComponent } from '../../components/create-payment-di
 })
 export class PaymentsComponent implements OnInit {
   paymentsList: Array<any> = [];
+  paymentTypesList: Array<any> = [];
   totalPages!: number;
   total!: number;
   actualPage: number = 1;
   actualLimit = 10;
   actualStatus: string = 'all';
+  selectedPaymentType: string = 'all';
   search: string = '';
   selectedMonth: string = '';
   selectedYear: number = new Date().getFullYear();
   searchControl = new FormControl('');
+  isLoadingPaymentTypes = false;
 
   // Options pour les filtres
   statusOptions = [
@@ -68,6 +71,7 @@ export class PaymentsComponent implements OnInit {
     }
 
     this.getPaymentsList(this.actualPage, this.actualLimit);
+    this.loadPaymentTypes();
 
     this.searchControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
@@ -88,6 +92,7 @@ export class PaymentsComponent implements OnInit {
       page,
       limit,
       ...(this.actualStatus && this.actualStatus !== 'all' ? { status: this.actualStatus } : {}),
+      ...(this.selectedPaymentType && this.selectedPaymentType !== 'all' ? { paymentType: this.selectedPaymentType } : {}),
       ...(this.search ? { search: this.search } : {}),
       ...(this.selectedMonth ? { month: this.selectedMonth } : {}),
       ...(this.selectedYear ? { year: this.selectedYear } : {}),
@@ -132,6 +137,26 @@ export class PaymentsComponent implements OnInit {
   onMonthChange(): void {
     this.actualPage = 1;
     this.getPaymentsList(this.actualPage, this.actualLimit);
+  }
+
+  onPaymentTypeChange(): void {
+    this.actualPage = 1;
+    this.getPaymentsList(this.actualPage, this.actualLimit);
+  }
+
+  loadPaymentTypes(): void {
+    this.isLoadingPaymentTypes = true;
+    this.paymentService.getPaymentTypes().subscribe({
+      next: (response: any) => {
+        const paymentTypes = response?.data || response || [];
+        this.paymentTypesList = paymentTypes;
+        this.isLoadingPaymentTypes = false;
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des types de paiement:', error);
+        this.isLoadingPaymentTypes = false;
+      },
+    });
   }
 
   getStatusClass(status: string): string {
@@ -303,6 +328,43 @@ export class PaymentsComponent implements OnInit {
       default:
         return method;
     }
+  }
+
+  getPaymentTypeName(payment: any): string {
+    if (!payment) return '-';
+    
+    // Nouvelle structure: payment.paymentType.name
+    if (payment.paymentType && payment.paymentType.name) {
+      return payment.paymentType.name;
+    }
+    
+    // Si c'est juste un ID, chercher dans la liste
+    if (payment.paymentType) {
+      const paymentType = this.paymentTypesList.find(
+        (pt) => pt._id === payment.paymentType || pt.id === payment.paymentType
+      );
+      if (paymentType) {
+        return paymentType.name || paymentType.label || paymentType.title || '-';
+      }
+    }
+    
+    return '-';
+  }
+
+  getTotalAmount(payment: any): number {
+    if (!payment) return 0;
+    
+    // Priorité au totalAmount
+    if (payment.totalAmount !== undefined && payment.totalAmount !== null) {
+      return payment.totalAmount;
+    }
+    
+    // Fallback sur amount pour compatibilité
+    if (payment.amount !== undefined && payment.amount !== null) {
+      return payment.amount;
+    }
+    
+    return 0;
   }
 
   goToStudentDetail(studentId: string | number | null): void {

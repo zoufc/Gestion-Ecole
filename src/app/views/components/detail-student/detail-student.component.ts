@@ -136,7 +136,7 @@ export class DetailStudentComponent implements OnInit {
     // Générer le QR code avec les informations de l'élève
     const studentData = {
       id: student._id || student.id || this.studentId,
-      studentNumber: student.student_number || student.studentNumber || '',
+      studentNumber: student.code || student.student_number || student.studentNumber || '',
       name: this.getStudentName(),
     };
 
@@ -145,7 +145,33 @@ export class DetailStudentComponent implements OnInit {
 
   getStudentNumber(): string {
     const student = this.student();
-    return student?.code || student?.studentNumber || 'Non assigné';
+    return student?.code || student?.studentNumber || student?.student_number || 'Non assigné';
+  }
+
+  getParentName(): string {
+    const student = this.student();
+    if (!student) return 'Non renseigné';
+    if (student.parent?.firstName && student.parent?.lastName) {
+      return `${student.parent.firstName} ${student.parent.lastName}`;
+    }
+    // Fallback pour compatibilité avec ancien format
+    return student.parentFullName || student.parent_full_name || student.parentName || student.parent_name || 'Non renseigné';
+  }
+
+  getParentPhone(): string {
+    const student = this.student();
+    if (!student) return 'Non renseigné';
+    if (student.parent?.phoneNumber) return student.parent.phoneNumber;
+    // Fallback pour compatibilité avec ancien format
+    return student.parentPhoneNumber || student.parent_phone_number || student.parentPhone || student.parent_phone || 'Non renseigné';
+  }
+
+  getParentEmail(): string {
+    const student = this.student();
+    if (!student) return 'Non renseigné';
+    if (student.parent?.email) return student.parent.email;
+    // Fallback pour compatibilité avec ancien format
+    return student.parentEmail || student.parent_email || 'Non renseigné';
   }
 
   getSchoolName(): string {

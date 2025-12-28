@@ -21,9 +21,10 @@ export enum PaymentStatus {
 export interface CreatePaymentDto {
   student: string; // MongoDB ObjectId
   month: string; // Format: "2024-01" pour janvier 2024
-  amount: number; // Minimum 0
+  reductionPercentage?: number; // 0-100, optionnel
   method: PaymentMethod; // Enum PaymentMethod
-  status?: PaymentStatus; // Enum PaymentStatus (PENDING par défaut)
+  paymentType: string; // MongoDB ObjectId
+  status?: PaymentStatus; // Enum PaymentStatus, optionnel
 }
 
 @Injectable({
@@ -60,6 +61,10 @@ export class PaymentService {
 
   getStudentPayments(studentId: string, filters: any = {}): Observable<any> {
     return this.getPayments({ ...filters, student: studentId });
+  }
+
+  getPaymentTypes(): Observable<any> {
+    return this.apiService.get('payment-types');
   }
 }
 

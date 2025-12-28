@@ -1,0 +1,180 @@
+<div class="flex flex-col gap-6 p-6">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+  </div>
+
+  <!-- Parent Details -->
+  <div *ngIf="!isLoading && parent()" class="flex flex-col gap-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+      <div>
+        <button
+          (click)="goBack()"
+          class="mb-4 text-primary-500 hover:text-primary-600 cursor-pointer flex items-center gap-2"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Retour à la liste
+        </button>
+        <h1 class="text-2xl font-bold text-primary-text">{{ getParentName() }}</h1>
+      </div>
+    </div>
+
+    <!-- Informations du parent -->
+    <div class="bg-card rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-bold mb-4 text-primary-text">Informations du parent</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-sm text-gray-500 mb-1">Nom complet</p>
+          <p class="text-lg font-semibold text-primary-text">{{ getParentName() }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">Email</p>
+          <p class="text-lg font-semibold text-primary-text">{{ parent()?.email || 'Non renseigné' }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">Téléphone</p>
+          <p class="text-lg font-semibold text-primary-text">
+            {{ parent()?.phoneNumber || parent()?.phone || 'Non renseigné' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 mb-1">Adresse</p>
+          <p class="text-lg font-semibold text-primary-text">{{ parent()?.address || 'Non renseigné' }}</p>
+        </div>
+        <div class="md:col-span-2">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Accès à la plateforme</p>
+              <span
+                *ngIf="hasPlatformAccess()"
+                class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 inline-block"
+              >
+                Oui
+              </span>
+              <span
+                *ngIf="!hasPlatformAccess()"
+                class="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-800 inline-block"
+              >
+                Non
+              </span>
+            </div>
+            <button
+              (click)="openCreateAccountDialog()"
+              class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-sm whitespace-nowrap"
+            >
+              {{ hasPlatformAccess() ? 'Modifier l\'accès' : 'Créer un accès' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des élèves -->
+    <div class="bg-card rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-primary-text">
+          Élèves ({{ getStudentsCount() }})
+        </h2>
+      </div>
+
+      <!-- Loading Students -->
+      <div *ngIf="isLoadingStudents" class="flex justify-center items-center py-10">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoadingStudents && studentsList().length === 0" class="text-center py-10 text-gray-500">
+        <svg
+          class="mx-auto h-12 w-12 text-gray-400 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+          />
+        </svg>
+        <p>Aucun élève associé à ce parent</p>
+      </div>
+
+      <!-- Students Table -->
+      <div *ngIf="!isLoadingStudents && studentsList().length > 0" class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-50 border-b border-gray-200">
+              <th class="p-4 text-left font-semibold text-primary-text">Nom</th>
+              <th class="p-4 text-left font-semibold text-primary-text">Classe</th>
+              <th class="p-4 text-left font-semibold text-primary-text">Numéro étudiant</th>
+              <th class="p-4 text-left font-semibold text-primary-text">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let student of studentsList()"
+              class="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+            >
+              <td class="p-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-primary-500 bg-opacity-10 flex items-center justify-center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                        fill="currentColor"
+                        class="text-primary-500"
+                      />
+                    </svg>
+                  </div>
+                  <span class="font-medium">{{ getStudentName(student) }}</span>
+                </div>
+              </td>
+              <td class="p-4">
+                <span class="px-2 py-1 rounded bg-blue-100 text-blue-800 text-sm">
+                  {{ getClassName(student) }}
+                </span>
+              </td>
+              <td class="p-4">
+                <span class="font-mono text-sm">
+                  {{ student.student_number || student.studentNumber || 'N/A' }}
+                </span>
+              </td>
+              <td class="p-4">
+                <button
+                  (click)="goToStudentDetail(student._id || student.id)"
+                  class="p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer text-primary-500 hover:text-primary-600"
+                  title="Voir détails"
+                >
+                  <svg width="20" height="20" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="1.83" stroke="currentColor" stroke-width="1.5" />
+                    <path
+                      d="M20.17 11C17.72 15.28 14.67 17.42 11 17.42C7.33 17.42 4.28 15.28 1.83 11C4.28 6.72 7.33 4.58 11 4.58C14.67 4.58 17.72 6.72 20.17 11"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Parent Found -->
+  <div *ngIf="!isLoading && !parent()" class="flex flex-col items-center justify-center py-20">
+    <p class="text-xl text-gray-500 mb-4">Parent non trouvé</p>
+    <button
+      (click)="goBack()"
+      class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+    >
+      Retour à la liste
+    </button>
+  </div>
+</div>
+

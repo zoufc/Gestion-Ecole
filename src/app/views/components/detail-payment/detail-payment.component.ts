@@ -206,6 +206,38 @@ export class DetailPaymentComponent implements OnInit {
     }
   }
 
+  getParentName(): string {
+    if (!this.payment?.student) return '';
+    const student = this.payment.student;
+    if (student.parent?.firstName && student.parent?.lastName) {
+      return `${student.parent.firstName} ${student.parent.lastName}`;
+    }
+    // Fallback pour compatibilité avec ancien format
+    return student.parentFullName || student.parent_full_name || student.parentName || student.parent_name || '';
+  }
+
+  getParentEmail(): string {
+    if (!this.payment?.student) return '';
+    const student = this.payment.student;
+    if (student.parent?.email) return student.parent.email;
+    // Fallback pour compatibilité avec ancien format
+    return student.parentEmail || student.parent_email || '';
+  }
+
+  getParentPhone(): string {
+    if (!this.payment?.student) return '';
+    const student = this.payment.student;
+    if (student.parent?.phoneNumber) return student.parent.phoneNumber;
+    // Fallback pour compatibilité avec ancien format
+    return student.parentPhoneNumber || student.parent_phone_number || student.parentPhone || student.parent_phone || '';
+  }
+
+  hasParentInfo(): boolean {
+    if (!this.payment?.student) return false;
+    const student = this.payment.student;
+    return !!(student.parent || student.parentFullName || student.parentEmail || student.parentPhoneNumber);
+  }
+
   goToStudentDetail(): void {
     if (this.payment?.student?._id) {
       this.router.navigate(['/students', this.payment.student._id]);

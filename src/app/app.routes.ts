@@ -24,6 +24,8 @@ import { CyclesComponent } from './views/pages/cycles/cycles.component';
 import { StudentsComponent } from './views/pages/students/students.component';
 import { DetailStudentComponent } from './views/components/detail-student/detail-student.component';
 import { DetailPaymentComponent } from './views/components/detail-payment/detail-payment.component';
+import { ParentsComponent } from './views/pages/parents/parents.component';
+import { DetailParentComponent } from './views/components/detail-parent/detail-parent.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent }, // Rediriger vers login par défaut
@@ -127,6 +129,19 @@ export const routes: Routes = [
       {
         path: 'teachers',
         component: TeachersComponent,
+      },
+      {
+        path: 'parents',
+        children: [
+          {
+            path: '',
+            component: ParentsComponent,
+          },
+          {
+            path: ':id',
+            component: DetailParentComponent,
+          },
+        ],
       },
       {
         path: 'cycles',

@@ -103,21 +103,40 @@
         <h3 class="text-md font-semibold mb-3">Informations parentales</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p class="text-sm mb-1">Nom complet du parent <span class="text-red-500">*</span></p>
+            <p class="text-sm mb-1">Prénom du parent <span class="text-red-500">*</span></p>
             <input
               type="text"
-              formControlName="parentFullName"
+              formControlName="parentFirstName"
               class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
-              placeholder="Nom complet du parent"
+              placeholder="Prénom du parent"
             />
             <div
               *ngIf="
-                createStudentForm.get('parentFullName')?.invalid &&
-                createStudentForm.get('parentFullName')?.touched
+                createStudentForm.get('parentFirstName')?.invalid &&
+                createStudentForm.get('parentFirstName')?.touched
               "
               class="text-red-500 text-xs mt-1"
             >
-              Le nom complet du parent est requis
+              Le prénom du parent est requis
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm mb-1">Nom du parent <span class="text-red-500">*</span></p>
+            <input
+              type="text"
+              formControlName="parentLastName"
+              class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+              placeholder="Nom du parent"
+            />
+            <div
+              *ngIf="
+                createStudentForm.get('parentLastName')?.invalid &&
+                createStudentForm.get('parentLastName')?.touched
+              "
+              class="text-red-500 text-xs mt-1"
+            >
+              Le nom du parent est requis
             </div>
           </div>
 

@@ -69,9 +69,9 @@ export class StudentsComponent implements OnInit {
             (student: any) =>
               (student.firstName || student.firstname || student.first_name || '')?.toLowerCase().includes(searchLower) ||
               (student.lastName || student.lastname || student.last_name || '')?.toLowerCase().includes(searchLower) ||
-              (student.parentEmail || '')?.toLowerCase().includes(searchLower) ||
-              (student.parentPhoneNumber || student.parent_phone_number || student.parentPhone || student.parent_phone || '')?.toLowerCase().includes(searchLower) ||
-              (student.student_number || student.studentNumber || '')?.toLowerCase().includes(searchLower)
+              (this.getParentEmail(student) || '')?.toLowerCase().includes(searchLower) ||
+              (this.getParentPhone(student) || '')?.toLowerCase().includes(searchLower) ||
+              (student.code || student.student_number || student.studentNumber || '')?.toLowerCase().includes(searchLower)
           );
         }
 
@@ -142,6 +142,26 @@ export class StudentsComponent implements OnInit {
 
   getClassName(student: any): string {
     return student.class?.name || student.class_name || 'Non assigné';
+  }
+
+  getParentEmail(student: any): string {
+    if (student.parent?.email) return student.parent.email;
+    // Fallback pour compatibilité avec ancien format
+    return student.parentEmail || student.parent_email || '';
+  }
+
+  getParentPhone(student: any): string {
+    if (student.parent?.phoneNumber) return student.parent.phoneNumber;
+    // Fallback pour compatibilité avec ancien format
+    return student.parentPhoneNumber || student.parent_phone_number || student.parentPhone || student.parent_phone || '';
+  }
+
+  getParentName(student: any): string {
+    if (student.parent?.firstName && student.parent?.lastName) {
+      return `${student.parent.firstName} ${student.parent.lastName}`;
+    }
+    // Fallback pour compatibilité avec ancien format
+    return student.parentFullName || student.parent_full_name || student.parentName || student.parent_name || '';
   }
 
   updatePagination(students: any[]): void {

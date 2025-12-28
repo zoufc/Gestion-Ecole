@@ -39,51 +39,77 @@
       </div>
     </div>
 
-    <!-- Montant -->
+    <!-- Mois -->
     <div>
-      <p class="text-sm mb-1">Montant (FCFA) <span class="text-red-500">*</span></p>
+      <p class="text-sm mb-1">Mois <span class="text-red-500">*</span></p>
+      <select
+        formControlName="month"
+        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full cursor-pointer"
+      >
+        <option *ngFor="let month of months" [value]="month.value">
+          {{ month.label }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          paymentForm.get('month')?.invalid &&
+          paymentForm.get('month')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Veuillez sélectionner un mois
+      </div>
+    </div>
+
+    <!-- Type de paiement -->
+    <div>
+      <p class="text-sm mb-1">Type de paiement <span class="text-red-500">*</span></p>
+      <select
+        formControlName="paymentType"
+        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full cursor-pointer"
+        [disabled]="isLoadingPaymentTypes"
+      >
+        <option value="" disabled selected>
+          {{ isLoadingPaymentTypes ? 'Chargement...' : 'Sélectionner un type de paiement' }}
+        </option>
+        <option
+          *ngFor="let paymentType of paymentTypesList"
+          [value]="paymentType._id || paymentType.id"
+        >
+          {{ getPaymentTypeLabel(paymentType) }}
+        </option>
+      </select>
+      <div
+        *ngIf="
+          paymentForm.get('paymentType')?.invalid &&
+          paymentForm.get('paymentType')?.touched
+        "
+        class="text-red-500 text-xs mt-1"
+      >
+        Veuillez sélectionner un type de paiement
+      </div>
+    </div>
+
+    <!-- Pourcentage de réduction -->
+    <div>
+      <p class="text-sm mb-1">Pourcentage de réduction (%)</p>
       <input
         type="number"
-        formControlName="amount"
+        formControlName="reductionPercentage"
         class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
-        placeholder="Ex: 50000"
+        placeholder="Ex: 10"
         min="0"
+        max="100"
         step="0.01"
       />
       <div
         *ngIf="
-          paymentForm.get('amount')?.invalid &&
-          paymentForm.get('amount')?.touched
+          paymentForm.get('reductionPercentage')?.invalid &&
+          paymentForm.get('reductionPercentage')?.touched
         "
         class="text-red-500 text-xs mt-1"
       >
-        Veuillez entrer un montant valide
-      </div>
-    </div>
-
-    <!-- Mois et Année -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <p class="text-sm mb-1">Mois <span class="text-red-500">*</span></p>
-        <select
-          formControlName="monthNumber"
-          class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
-        >
-          <option *ngFor="let month of months" [value]="month.value">
-            {{ month.label }}
-          </option>
-        </select>
-      </div>
-      <div>
-        <p class="text-sm mb-1">Année <span class="text-red-500">*</span></p>
-        <select
-          formControlName="year"
-          class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
-        >
-          <option *ngFor="let year of years" [value]="year">
-            {{ year }}
-          </option>
-        </select>
+        Le pourcentage doit être entre 0 et 100
       </div>
     </div>
 
@@ -111,24 +137,15 @@
 
     <!-- Statut -->
     <div>
-      <p class="text-sm mb-1">Statut <span class="text-red-500">*</span></p>
+      <p class="text-sm mb-1">Statut</p>
       <select
         formControlName="status"
-        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full"
+        class="px-4 py-2 border bg-card border-gray-300 rounded-lg focus:ring-1 focus:ring-primary-500 focus:border-primary-500 focus:outline-none w-full cursor-pointer"
       >
         <option *ngFor="let status of statusOptions" [value]="status.value">
           {{ status.label }}
         </option>
       </select>
-      <div
-        *ngIf="
-          paymentForm.get('status')?.invalid &&
-          paymentForm.get('status')?.touched
-        "
-        class="text-red-500 text-xs mt-1"
-      >
-        Veuillez sélectionner un statut
-      </div>
     </div>
 
     <!-- Actions -->

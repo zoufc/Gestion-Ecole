@@ -29,7 +29,9 @@ export class CreatePaymentDialogComponent implements OnInit {
   
   paymentForm!: FormGroup;
   studentsList: any[] = [];
+  paymentTypesList: any[] = [];
   isLoadingStudents = false;
+  isLoadingPaymentTypes = false;
   isSubmitting = false;
 
   paymentMethods = [
@@ -49,24 +51,8 @@ export class CreatePaymentDialogComponent implements OnInit {
 
   isEditing = false;
 
-  // Générer les mois et années dynamiquement
-  months = [
-    { value: '01', label: 'Janvier' },
-    { value: '02', label: 'Février' },
-    { value: '03', label: 'Mars' },
-    { value: '04', label: 'Avril' },
-    { value: '05', label: 'Mai' },
-    { value: '06', label: 'Juin' },
-    { value: '07', label: 'Juillet' },
-    { value: '08', label: 'Août' },
-    { value: '09', label: 'Septembre' },
-    { value: '10', label: 'Octobre' },
-    { value: '11', label: 'Novembre' },
-    { value: '12', label: 'Décembre' },
-  ];
-
-  years: number[] = [];
-  currentYear = new Date().getFullYear();
+  // Générer les mois au format "YYYY-MM"
+  months: { value: string; label: string }[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -77,15 +63,27 @@ export class CreatePaymentDialogComponent implements OnInit {
     private toast: ToastService,
     private spinner: NgxSpinnerService
   ) {
-    // Générer les années (année actuelle et 2 années précédentes)
-    for (let i = 0; i < 3; i++) {
-      this.years.push(this.currentYear - i);
+    // Générer les mois au format "YYYY-MM" pour l'année actuelle et l'année précédente
+    const currentYear = new Date().getFullYear();
+    const monthLabels = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    
+    for (let year = currentYear; year >= currentYear - 1; year--) {
+      for (let month = 1; month <= 12; month++) {
+        const monthStr = String(month).padStart(2, '0');
+        const monthValue = `${year}-${monthStr}`;
+        const monthLabel = `${monthLabels[month - 1]} ${year}`;
+        this.months.push({ value: monthValue, label: monthLabel });
+      }
     }
   }
 
   ngOnInit(): void {
     this.initForm();
     this.loadStudents();
+    this.loadPaymentTypes();
 
     // Si on est en mode édition
     if (this.data?.payment) {
@@ -100,26 +98,10 @@ export class CreatePaymentDialogComponent implements OnInit {
         this.paymentForm.get('student')?.disable();
       }
       
-      // Parser le mois au format "YYYY-MM" ou "MM-YYYY"
-      if (payment.month) {
-        const parts = payment.month.split('-');
-        if (parseInt(parts[0]) >= 2000) {
-          // Format YYYY-MM
-          this.paymentForm.patchValue({ 
-            year: parseInt(parts[0]),
-            monthNumber: parts[1]
-          });
-        } else {
-          // Format MM-YYYY
-          this.paymentForm.patchValue({ 
-            year: parseInt(parts[1]),
-            monthNumber: parts[0]
-          });
-        }
-      }
-      
       this.paymentForm.patchValue({
-        amount: payment.amount,
+        month: payment.month || this.getCurrentMonth(),
+        paymentType: payment.paymentType?._id || payment.paymentType,
+        reductionPercentage: payment.reductionPercentage || null,
         method: payment.method,
         status: payment.status || PaymentStatus.PENDING,
       });
@@ -133,26 +115,30 @@ export class CreatePaymentDialogComponent implements OnInit {
 
       // Si un mois est fourni au format "YYYY-MM", le présélectionner
       if (this.data?.month) {
-        const [year, month] = this.data.month.split('-');
-        this.paymentForm.patchValue({ 
-          monthNumber: month, 
-          year: parseInt(year) 
-        });
+        this.paymentForm.patchValue({ month: this.data.month });
+      } else {
+        // Sinon, définir le mois actuel par défaut
+        this.paymentForm.patchValue({ month: this.getCurrentMonth() });
       }
     }
   }
 
   initForm(): void {
-    const today = new Date();
-
     this.paymentForm = this.fb.group({
       student: ['', [Validators.required]],
-      amount: ['', [Validators.required, Validators.min(0)]],
-      monthNumber: [String(today.getMonth() + 1).padStart(2, '0'), [Validators.required]],
-      year: [today.getFullYear(), [Validators.required]],
+      month: [this.getCurrentMonth(), [Validators.required]],
+      paymentType: ['', [Validators.required]],
+      reductionPercentage: [null, [Validators.min(0), Validators.max(100)]],
       method: [PaymentMethod.CASH, [Validators.required]],
-      status: [PaymentStatus.PENDING, [Validators.required]],
+      status: [PaymentStatus.PENDING],
     });
+  }
+
+  getCurrentMonth(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
   }
 
   loadStudents(): void {
@@ -171,11 +157,33 @@ export class CreatePaymentDialogComponent implements OnInit {
     });
   }
 
+  loadPaymentTypes(): void {
+    this.isLoadingPaymentTypes = true;
+    this.paymentService.getPaymentTypes().subscribe({
+      next: (response: any) => {
+        const paymentTypes = response?.data || response || [];
+        this.paymentTypesList = paymentTypes;
+        this.isLoadingPaymentTypes = false;
+      },
+      error: (error: any) => {
+        console.error('Erreur lors du chargement des types de paiement:', error);
+        this.toast.showError('Erreur lors du chargement des types de paiement');
+        this.isLoadingPaymentTypes = false;
+      },
+    });
+  }
+
 
   getStudentName(student: any): string {
     const firstName = student.firstName || student.firstname || student.first_name || '';
     const lastName = student.lastName || student.lastname || student.last_name || '';
     return `${firstName} ${lastName}`.trim() || 'Sans nom';
+  }
+
+  getPaymentTypeLabel(paymentType: any): string {
+    const name = paymentType.name || paymentType.label || paymentType.title || 'Sans nom';
+    const amount = paymentType.amount || 0;
+    return `${name} - ${amount} FCFA`;
   }
 
   onSubmit(): void {
@@ -187,17 +195,23 @@ export class CreatePaymentDialogComponent implements OnInit {
     this.isSubmitting = true;
 
     const formValue = this.paymentForm.getRawValue(); // getRawValue() pour obtenir les valeurs même si disabled
-    
-    // Construire le mois au format "YYYY-MM"
-    const month = `${formValue.year}-${formValue.monthNumber}`;
 
-    const paymentData = {
+    const paymentData: any = {
       student: formValue.student,
-      month: month,
-      amount: parseFloat(formValue.amount),
+      month: formValue.month,
+      paymentType: formValue.paymentType,
       method: formValue.method,
-      status: formValue.status || PaymentStatus.PENDING,
     };
+
+    // Ajouter reductionPercentage seulement s'il est défini
+    if (formValue.reductionPercentage !== null && formValue.reductionPercentage !== undefined && formValue.reductionPercentage !== '') {
+      paymentData.reductionPercentage = parseFloat(formValue.reductionPercentage);
+    }
+
+    // Ajouter status seulement s'il est défini
+    if (formValue.status) {
+      paymentData.status = formValue.status;
+    }
 
     if (this.isEditing && this.data?.payment) {
       // Mode édition : utiliser updatePayment (PATCH)

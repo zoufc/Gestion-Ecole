@@ -130,21 +130,19 @@
         <div>
           <p class="text-sm text-gray-500 dark:text-gray-400">Nom complet du parent</p>
           <p class="text-lg font-semibold text-primary-text">
-            {{ student()?.parentFullName || student()?.parent_full_name || student()?.parentName ||
-            student()?.parent_name || 'Non renseigné' }}
+            {{ getParentName() }}
           </p>
         </div>
         <div>
           <p class="text-sm text-gray-500 dark:text-gray-400">Téléphone du parent</p>
           <p class="text-lg font-semibold text-primary-text">
-            {{ student()?.parentPhoneNumber || student()?.parent_phone_number || student()?.parentPhone ||
-            student()?.parent_phone || 'Non renseigné' }}
+            {{ getParentPhone() }}
           </p>
         </div>
         <div>
           <p class="text-sm text-gray-500 dark:text-gray-400">Email du parent</p>
           <p class="text-lg font-semibold text-primary-text">
-            {{ student()?.parentEmail || student()?.parent_email || 'Non renseigné' }}
+            {{ getParentEmail() }}
           </p>
         </div>
       </div>
